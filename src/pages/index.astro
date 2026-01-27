@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const pageTitle = 'Tregou — [Tagline aqui]';
+const pageDescription = '[Descrição breve do produto para SEO]';
+---
+
+<BaseLayout title={pageTitle} description={pageDescription}>
+  <main class="container">
+    <h1>Tregou</h1>
+    <p>Landing page em construção.</p>
+  </main>
+</BaseLayout>
+
+<style>
+  main {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    color: var(--color-text-muted);
+  }
+</style>
