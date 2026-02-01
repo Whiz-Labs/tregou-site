@@ -1,0 +1,16 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Güvenli redirect (www -> non-www veya tersi)
+[[redirects]]
+  from = "https://www.tregou.app/*"
+  to = "https://tregou.app/:splat"
+  status = 301
+  force = true
+
+# SPA gibi davranması gerekirse (opsiyonel, Astro için genelde gerekmez)
+# [[redirects]]
+#   from = "/*"
+#   to = "/index.html"
+#   status = 200
