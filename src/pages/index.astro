@@ -13,7 +13,10 @@ const { whatsappLink } = config;
     <div class="container hero-container">
       <nav class="nav">
         <img src="/tregou-logo.png" alt="Tregou" class="nav-logo" />
-        <a href={whatsappLink} class="nav-cta" target="_blank" rel="noopener">Fale conosco</a>
+        <div class="nav-actions">
+          <a href="https://panel.tregou.app" class="nav-panel" target="_blank" rel="noopener">Painel</a>
+          <a href={whatsappLink} class="nav-cta" target="_blank" rel="noopener">Fale conosco</a>
+        </div>
       </nav>
 
       <div class="hero-main">
@@ -427,6 +430,27 @@ const { whatsappLink } = config;
     .nav-logo {
       height: 44px;
     }
+  }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .nav-panel {
+    color: var(--color-white);
+    font-weight: 500;
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s;
+    white-space: nowrap;
+    opacity: 0.8;
+  }
+
+  .nav-panel:hover {
+    opacity: 1;
+    text-decoration: none;
   }
 
   .nav-cta {
