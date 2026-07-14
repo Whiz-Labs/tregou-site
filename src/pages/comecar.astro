@@ -11,7 +11,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 
 <BaseLayout
   title="Começar com o Tregou"
-  description="Responda 5 perguntas rápidas e veja como o Tregou funciona pro seu restaurante — distribuição de entregas automática, no prazo e no seu controle."
+  description="Responda 5 perguntas rápidas e veja como o Tregou funciona pro seu negócio — distribuição de entregas automática, no prazo e no seu controle."
 >
   <main class="quiz">
     <div class="card">
@@ -22,7 +22,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
         <div class="brand">
           <img src="/tregou-logo.png" alt="Tregou" height="30" />
         </div>
-        <h1>Veja como o Tregou funciona <span class="hl">pro seu restaurante</span></h1>
+        <h1>Veja como o Tregou funciona <span class="hl">pro seu negócio</span></h1>
         <p class="lead">Responda 5 perguntas rápidas (leva 30 segundos) e a gente te mostra exatamente onde o Tregou te ajuda.</p>
         <button class="btn btn-primary" data-next>Começar →</button>
         <button class="skip" data-goto-result data-ready>Já sei que quero — criar conta grátis</button>
@@ -103,7 +103,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
           <div class="oc"><span class="ck">✓</span><span>Menos tempo perdido decidindo e despachando</span></div>
           <div class="oc"><span class="ck">✓</span><span>Você enxerga tudo ao vivo, do preparo à porta</span></div>
         </div>
-        <div class="founding">🚀 As <b>50 primeiras</b> restaurantes viram <b>Fundadoras</b>: preço travado, prioridade e IA liberada.</div>
+        <div class="founding">🚀 As <b>50 primeiras</b> a entrar viram <b>Fundadoras</b>: preço travado, prioridade e IA liberada.</div>
         <div class="actions">
           <a class="btn btn-primary" id="go-signup" data-base={config.signupLink} href={config.signupLink} target="_blank" rel="noopener noreferrer">Criar conta grátis</a>
           <a class="btn btn-outline" href={config.presentationLink} target="_blank" rel="noopener noreferrer">Ver a apresentação</a>
@@ -273,7 +273,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
         balcao: 'no balcão',
       };
       const OPEN = {
-        sim: 'Pra um restaurante que já tem equipe própria de entrega',
+        sim: 'Pra um negócio que já tem equipe própria de entrega',
         quero: 'Pra quem está montando a própria equipe de entrega',
         app: 'Pra você ganhar autonomia além do app de entrega',
       };
@@ -282,7 +282,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       // Result is a clean closing statement — the solutions were already shown
       // inline during step 3, as each pain was selected.
       function buildResult() {
-        let intro = OPEN[answers.fleet] || 'Pro seu restaurante';
+        let intro = OPEN[answers.fleet] || 'Pro seu negócio';
         if (answers.size && answers.fleet !== 'app') intro += ', ' + SIZE[answers.size];
         if (CANAL_SHORT[answers.canal]) intro += ', que recebe pedidos ' + CANAL_SHORT[answers.canal];
         intro += ' — o Tregou faz isso no automático. Veja o que muda no seu dia:';
