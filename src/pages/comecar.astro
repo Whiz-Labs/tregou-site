@@ -1,0 +1,322 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { config } from '../config';
+
+// Supabase (public anon key — safe to expose; RLS allows insert-only on quiz_responses).
+// Set PUBLIC_SUPABASE_URL / PUBLIC_SUPABASE_ANON_KEY in the env. If unset, the quiz
+// still works and simply skips saving.
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+---
+
+<BaseLayout
+  title="Começar com o Tregou"
+  description="Responda 4 perguntas rápidas e veja como o Tregou funciona pro seu restaurante — distribuição de entregas automática, no prazo e no seu controle."
+>
+  <main class="quiz">
+    <div class="card">
+      <div class="bar" aria-hidden="true"><div class="bar-fill" id="bar"></div></div>
+
+      <!-- 0 · INTRO -->
+      <section class="step is-active" data-step="0">
+        <div class="brand">
+          <img src="/tregou-logo.png" alt="Tregou" height="30" />
+        </div>
+        <h1>Veja como o Tregou funciona <span class="hl">pro seu restaurante</span></h1>
+        <p class="lead">Responda 4 perguntas rápidas (leva 30 segundos) e a gente te mostra exatamente onde o Tregou te ajuda.</p>
+        <button class="btn btn-primary" data-next>Começar →</button>
+        <button class="skip" data-goto-result data-ready>Já sei que quero — criar conta grátis</button>
+      </section>
+
+      <!-- 1 -->
+      <section class="step" data-step="1">
+        <p class="q-count">Pergunta 1 de 4</p>
+        <h2>Você já tem entregadores próprios?</h2>
+        <div class="options">
+          <button class="opt" data-q="fleet" data-val="sim">Sim, tenho minha equipe</button>
+          <button class="opt" data-q="fleet" data-val="quero">Ainda não, mas quero montar</button>
+          <button class="opt" data-q="fleet" data-val="app">Uso só app de entrega (iFood)</button>
+        </div>
+      </section>
+
+      <!-- 2 -->
+      <section class="step" data-step="2">
+        <p class="q-count">Pergunta 2 de 4</p>
+        <h2>Quantos entregadores na sua operação?</h2>
+        <div class="options">
+          <button class="opt" data-q="size" data-val="p">1 a 2</button>
+          <button class="opt" data-q="size" data-val="m">3 a 5</button>
+          <button class="opt" data-q="size" data-val="g">6 ou mais</button>
+        </div>
+      </section>
+
+      <!-- 3 -->
+      <section class="step" data-step="3">
+        <p class="q-count">Pergunta 3 de 4</p>
+        <h2>O que mais te atrapalha hoje?</h2>
+        <p class="multi-hint">Pode marcar mais de um.</p>
+        <div class="options">
+          <button class="opt opt-check" data-q="pain" data-val="decidir">Decidir quem leva cada pedido</button>
+          <button class="opt opt-check" data-q="pain" data-val="atraso">Pedidos atrasando e cliente reclamando</button>
+          <button class="opt opt-check" data-q="pain" data-val="visao">Não saber onde está cada entrega</button>
+          <button class="opt opt-check" data-q="pain" data-val="equipe">Minha equipe não dá conta no pico</button>
+        </div>
+        <button class="btn btn-primary continue" data-continue disabled>Continuar</button>
+      </section>
+
+      <!-- 4 -->
+      <section class="step" data-step="4">
+        <p class="q-count">Pergunta 4 de 4</p>
+        <h2>De onde vêm seus pedidos?</h2>
+        <div class="options">
+          <button class="opt" data-q="canal" data-val="ifood">iFood</button>
+          <button class="opt" data-q="canal" data-val="whats">WhatsApp e telefone</button>
+          <button class="opt" data-q="canal" data-val="misto">iFood + outros canais</button>
+          <button class="opt" data-q="canal" data-val="balcao">Balcão / retirada</button>
+        </div>
+      </section>
+
+      <!-- RESULT -->
+      <section class="step" data-step="5">
+        <div class="badge">Feito pro seu caso</div>
+        <h2 id="result-title">O Tregou resolve exatamente isso</h2>
+        <p class="result-text" id="result-text"></p>
+        <div class="founding">🚀 As <b>50 primeiras</b> restaurantes viram <b>Fundadoras</b>: preço travado, prioridade e IA liberada.</div>
+        <div class="actions">
+          <a class="btn btn-primary" id="go-signup" data-base={config.signupLink} href={config.signupLink} target="_blank" rel="noopener noreferrer">Criar conta grátis</a>
+          <a class="btn btn-outline" href={config.presentationLink} target="_blank" rel="noopener noreferrer">Ver a apresentação</a>
+        </div>
+        <a class="wa" href={config.whatsappLink} target="_blank" rel="noopener noreferrer">Prefere falar antes? Fale no WhatsApp</a>
+      </section>
+
+      <button class="back" id="back" hidden>← Voltar</button>
+    </div>
+  </main>
+
+  <style>
+    .quiz {
+      --g: #2b9348; --g-deep: #1b6e36; --g-tint: #e4f1e7; --amber: #f9c74f;
+      --ink: #16211b; --muted: #5c6b62; --line: #e3ebe0;
+      --bg: #f5f8f3; --surface: #ffffff;
+      min-height: 100dvh; display: grid; place-items: center;
+      background: radial-gradient(120% 80% at 80% -10%, var(--g-tint), var(--bg));
+      padding: 24px; color: var(--ink);
+    }
+    .card {
+      width: 100%; max-width: 560px; background: var(--surface);
+      border: 1px solid var(--line); border-radius: 22px;
+      padding: clamp(24px, 5vw, 44px); position: relative;
+      box-shadow: 0 30px 70px -34px rgba(20, 60, 35, 0.4);
+    }
+    .bar { height: 6px; background: var(--g-tint); border-radius: 100px; overflow: hidden; margin-bottom: 26px; }
+    .bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--g), var(--g-deep)); border-radius: 100px; transition: width .4s ease; }
+
+    .step { display: none; }
+    .step.is-active { display: block; animation: fade .35s ease; }
+    @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .step.is-active { animation: none; } .bar-fill { transition: none; } }
+
+    .brand { margin-bottom: 22px; }
+    .brand img { height: 30px; width: auto; }
+
+    h1 { font-size: clamp(1.6rem, 4.5vw, 2.3rem); line-height: 1.1; letter-spacing: -0.03em; font-weight: 700; text-wrap: balance; }
+    .hl { color: var(--g); }
+    .lead { color: var(--muted); margin-top: 12px; font-size: 1.05rem; }
+    h2 { font-size: clamp(1.3rem, 3.6vw, 1.75rem); line-height: 1.15; letter-spacing: -0.02em; font-weight: 700; text-wrap: balance; }
+    .q-count { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--g-deep); margin-bottom: 8px; }
+
+    .options { display: grid; gap: 11px; margin-top: 22px; }
+    .opt {
+      font: inherit; text-align: left; cursor: pointer; background: var(--surface);
+      border: 1.5px solid var(--line); border-radius: 13px; padding: 16px 18px;
+      font-size: 1.02rem; font-weight: 550; color: var(--ink);
+      transition: border-color .15s, background .15s, transform .1s;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .opt::after { content: "→"; color: var(--line); font-weight: 700; transition: color .15s, transform .15s; }
+    .opt:hover { border-color: var(--g); background: var(--g-tint); }
+    .opt:hover::after { color: var(--g); transform: translateX(3px); }
+    .opt:focus-visible { outline: 2px solid var(--g); outline-offset: 2px; }
+
+    .multi-hint { font-size: 0.9rem; color: var(--muted); margin-top: 4px; }
+    .opt-check::after { content: ""; width: 20px; height: 20px; border: 1.8px solid var(--line); border-radius: 6px; display: grid; place-items: center; font-size: 0.78rem; font-weight: 800; color: #fff; transition: background .15s, border-color .15s; }
+    .opt-check:hover::after { transform: none; }
+    .opt-check.selected { border-color: var(--g); background: var(--g-tint); }
+    .opt-check.selected::after { content: "✓"; background: var(--g); border-color: var(--g); }
+    .continue:disabled { opacity: 0.45; pointer-events: none; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      font: inherit; font-weight: 700; font-size: 1.02rem; cursor: pointer;
+      border-radius: 13px; padding: 15px 26px; text-decoration: none; border: 1.5px solid transparent;
+      transition: transform .12s, box-shadow .12s, background .12s;
+    }
+    .btn:hover { text-decoration: none; transform: translateY(-2px); }
+    .btn-primary { background: var(--g); color: #fff; box-shadow: 0 12px 26px -12px rgba(43, 147, 72, 0.6); margin-top: 26px; }
+    .btn-primary:hover { background: var(--g-deep); }
+    .btn-outline { background: var(--surface); color: var(--g-deep); border-color: var(--line); }
+    .btn-outline:hover { border-color: var(--g); background: var(--g-tint); }
+
+    .skip { display: block; margin: 16px auto 0; background: none; border: none; color: var(--muted); font: inherit; font-size: 0.92rem; text-decoration: underline; cursor: pointer; }
+    .skip:hover { color: var(--g-deep); }
+
+    .badge { display: inline-block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--g-deep); background: var(--g-tint); border: 1px solid var(--g); border-radius: 100px; padding: 5px 12px; margin-bottom: 12px; }
+    .result-text { color: var(--ink); font-size: 1.1rem; line-height: 1.55; margin-top: 4px; }
+    .result-text b { color: var(--g-deep); }
+    .founding { margin-top: 20px; background: #fdf3d6; border: 1px solid var(--amber); border-radius: 12px; padding: 12px 15px; font-size: 0.92rem; color: #7a5200; }
+    .founding b { color: #7a5200; }
+    .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+    .actions .btn { margin-top: 0; flex: 1 1 auto; }
+    .wa { display: inline-block; margin-top: 16px; color: var(--muted); font-size: 0.95rem; }
+    .wa:hover { color: var(--g-deep); }
+
+    .back { position: absolute; top: 18px; right: 20px; background: none; border: none; color: var(--muted); font: inherit; font-size: 0.88rem; cursor: pointer; }
+    .back:hover { color: var(--g-deep); }
+
+    @media (max-width: 480px) { .actions .btn { flex-basis: 100%; } }
+  </style>
+
+  <script define:vars={{ sbUrl: SUPABASE_URL, sbKey: SUPABASE_ANON_KEY }}>
+    window.__SB = { url: sbUrl, key: sbKey };
+  </script>
+
+  <script>
+    (function () {
+      const steps = Array.from(document.querySelectorAll('.step'));
+      const bar = document.getElementById('bar');
+      const back = document.getElementById('back');
+      const answers = {};
+      const TOTAL_Q = 4; // questions 1..4; step 5 is the result
+      let cur = 0;
+
+      function show(n) {
+        cur = Math.max(0, Math.min(steps.length - 1, n));
+        steps.forEach((s, i) => s.classList.toggle('is-active', i === cur));
+        bar.style.width = (cur / (TOTAL_Q + 1)) * 100 + '%';
+        back.hidden = cur === 0 || cur === steps.length - 1;
+        if (cur === steps.length - 1) { buildResult(); attributeSignup(); saveResponse(); }
+        try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {}
+      }
+
+      // intro "Começar"
+      document.querySelectorAll('[data-next]').forEach((b) =>
+        b.addEventListener('click', () => show(cur + 1))
+      );
+      // intro "já quero" → jump to result (ready buyer)
+      document.querySelectorAll('[data-ready]').forEach((b) =>
+        b.addEventListener('click', () => show(steps.length - 1))
+      );
+      // single-choice options → record + advance
+      document.querySelectorAll('.opt:not(.opt-check)').forEach((o) =>
+        o.addEventListener('click', () => {
+          answers[o.dataset.q] = o.dataset.val;
+          show(cur + 1);
+        })
+      );
+
+      // multi-choice (pain) → toggle, then "Continuar"
+      const painSet = new Set();
+      const continueBtn = document.querySelector('[data-continue]');
+      document.querySelectorAll('.opt-check').forEach((o) =>
+        o.addEventListener('click', () => {
+          const v = o.dataset.val;
+          if (painSet.has(v)) { painSet.delete(v); o.classList.remove('selected'); }
+          else { painSet.add(v); o.classList.add('selected'); }
+          if (continueBtn) continueBtn.disabled = painSet.size === 0;
+        })
+      );
+      if (continueBtn)
+        continueBtn.addEventListener('click', () => {
+          answers.pain = Array.from(painSet);
+          show(cur + 1);
+        });
+
+      back.addEventListener('click', () => show(cur - 1));
+
+      const PAIN = {
+        decidir: 'distribui cada pedido sozinho pro entregador certo, juntando as entregas do mesmo caminho',
+        atraso: 'prioriza cada entrega pelo prazo e remaneja sozinho se um entregador some',
+        visao: 'mostra cada entregador no mapa ao vivo, do preparo até a porta do cliente',
+        equipe: 'faz sua equipe render mais, agrupando entregas pra cobrir mais pedidos com a mesma gente',
+      };
+      const OPEN = {
+        sim: 'Pra um restaurante que já tem equipe própria de entrega',
+        quero: 'Pra quem está montando a própria equipe de entrega',
+        app: 'Pra você ganhar autonomia além do app de entrega',
+      };
+      const SIZE = { p: 'com 1 a 2 entregadores', m: 'com 3 a 5 entregadores', g: 'com 6 ou mais entregadores' };
+      const CANAL = {
+        ifood: 'Seus pedidos do iFood entram automaticamente',
+        whats: 'Seus pedidos de WhatsApp e telefone você lança em segundos',
+        misto: 'Seus pedidos do iFood e dos outros canais entram no mesmo lugar',
+        balcao: 'Seus pedidos entram todos no mesmo lugar',
+      };
+
+      function joinPains(arr) {
+        const parts = (arr || []).map((v) => PAIN[v]).filter(Boolean);
+        if (parts.length === 0) return PAIN.decidir;
+        if (parts.length === 1) return parts[0];
+        return parts.slice(0, -1).join(', ') + ' e ' + parts[parts.length - 1];
+      }
+
+      function buildResult() {
+        let prefix = OPEN[answers.fleet] || 'Pro seu restaurante';
+        if (answers.size && answers.fleet !== 'app') prefix += ', ' + SIZE[answers.size];
+        const painClause = 'o Tregou ' + joinPains(answers.pain);
+        const canal = CANAL[answers.canal] || CANAL.ifood;
+        const text =
+          prefix + ', ' + painClause + '. ' + canal +
+          ' — com <b>relatórios</b> e o <b>controle sempre na sua mão</b>.';
+        const el = document.getElementById('result-text');
+        if (el) el.innerHTML = text;
+      }
+
+      // Attribution: carry the answers into the signup link so a conversion
+      // can be tied back to the quiz profile.
+      function attributeSignup() {
+        const a = document.getElementById('go-signup');
+        if (!a || !a.dataset.base) return;
+        const p = new URLSearchParams({ src: 'quiz' });
+        if (answers.fleet) p.set('fleet', answers.fleet);
+        if (answers.size) p.set('size', answers.size);
+        if (answers.pain && answers.pain.length)
+          p.set('pain', Array.isArray(answers.pain) ? answers.pain.join(',') : answers.pain);
+        if (answers.canal) p.set('canal', answers.canal);
+        const base = a.dataset.base;
+        a.href = base + (base.indexOf('?') >= 0 ? '&' : '?') + p.toString();
+      }
+
+      // Store the anonymous response in Supabase (insert-only via the public anon
+      // key). Fire-and-forget: never blocks the UI, silently skips if unconfigured.
+      let saved = false;
+      function saveResponse() {
+        if (saved) return;
+        if (!answers.fleet && !answers.pain && !answers.size && !answers.canal) return; // nothing answered
+        const sb = window.__SB || {};
+        if (!sb.url || !sb.key) return;
+        saved = true;
+        try {
+          fetch(sb.url.replace(/\/$/, '') + '/rest/v1/quiz_responses', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              apikey: sb.key,
+              Authorization: 'Bearer ' + sb.key,
+              Prefer: 'return=minimal',
+            },
+            body: JSON.stringify({
+              fleet: answers.fleet || null,
+              size: answers.size || null,
+              pains: answers.pain || null,
+              canal: answers.canal || null,
+              source: 'landing-quiz',
+              referrer: document.referrer || null,
+              user_agent: navigator.userAgent || null,
+            }),
+            keepalive: true,
+          }).catch(function () {});
+        } catch (e) {}
+      }
+    })();
+  </script>
+</BaseLayout>
