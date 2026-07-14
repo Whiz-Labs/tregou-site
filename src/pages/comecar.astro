@@ -11,7 +11,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 
 <BaseLayout
   title="Começar com o Tregou"
-  description="Responda 4 perguntas rápidas e veja como o Tregou funciona pro seu restaurante — distribuição de entregas automática, no prazo e no seu controle."
+  description="Responda 5 perguntas rápidas e veja como o Tregou funciona pro seu restaurante — distribuição de entregas automática, no prazo e no seu controle."
 >
   <main class="quiz">
     <div class="card">
@@ -23,14 +23,14 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
           <img src="/tregou-logo.png" alt="Tregou" height="30" />
         </div>
         <h1>Veja como o Tregou funciona <span class="hl">pro seu restaurante</span></h1>
-        <p class="lead">Responda 4 perguntas rápidas (leva 30 segundos) e a gente te mostra exatamente onde o Tregou te ajuda.</p>
+        <p class="lead">Responda 5 perguntas rápidas (leva 30 segundos) e a gente te mostra exatamente onde o Tregou te ajuda.</p>
         <button class="btn btn-primary" data-next>Começar →</button>
         <button class="skip" data-goto-result data-ready>Já sei que quero — criar conta grátis</button>
       </section>
 
       <!-- 1 -->
       <section class="step" data-step="1">
-        <p class="q-count">Pergunta 1 de 4</p>
+        <p class="q-count">Pergunta 1 de 5</p>
         <h2>Você já tem entregadores próprios?</h2>
         <div class="options">
           <button class="opt" data-q="fleet" data-val="sim">Sim, tenho minha equipe</button>
@@ -41,7 +41,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 
       <!-- 2 -->
       <section class="step" data-step="2">
-        <p class="q-count">Pergunta 2 de 4</p>
+        <p class="q-count">Pergunta 2 de 5</p>
         <h2>Quantos entregadores na sua operação?</h2>
         <div class="options">
           <button class="opt" data-q="size" data-val="p">1 a 2</button>
@@ -50,9 +50,9 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
         </div>
       </section>
 
-      <!-- 3 -->
+      <!-- 3 · pains (multi-select) -->
       <section class="step" data-step="3">
-        <p class="q-count">Pergunta 3 de 4</p>
+        <p class="q-count">Pergunta 3 de 5</p>
         <h2>O que mais te atrapalha hoje?</h2>
         <p class="multi-hint">Pode marcar mais de um.</p>
         <div class="options">
@@ -64,9 +64,25 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
         <button class="btn btn-primary continue" data-continue disabled>Continuar</button>
       </section>
 
-      <!-- 4 -->
+      <!-- 4 · what would help (multi-select) — surfaces Tregou's capabilities -->
       <section class="step" data-step="4">
-        <p class="q-count">Pergunta 4 de 4</p>
+        <p class="q-count">Pergunta 4 de 5</p>
+        <h2>O que faria mais diferença pra você?</h2>
+        <p class="multi-hint">Pode marcar mais de um.</p>
+        <div class="options">
+          <button class="opt opt-check" data-q="help" data-val="dispatch">Distribuir os pedidos sozinho, pro entregador certo</button>
+          <button class="opt opt-check" data-q="help" data-val="rota">Guiar o entregador pela melhor rota, parada a parada</button>
+          <button class="opt opt-check" data-q="help" data-val="tempo">Avisar o tempo de cada entrega e alertar atrasos</button>
+          <button class="opt opt-check" data-q="help" data-val="mapa">Acompanhar os entregadores no mapa, ao vivo</button>
+          <button class="opt opt-check" data-q="help" data-val="relatorios">Relatórios pra saber onde melhorar</button>
+          <button class="opt opt-check" data-q="help" data-val="ia">Um assistente de IA que responde sobre seus números</button>
+        </div>
+        <button class="btn btn-primary continue" data-continue disabled>Continuar</button>
+      </section>
+
+      <!-- 5 · canal -->
+      <section class="step" data-step="5">
+        <p class="q-count">Pergunta 5 de 5</p>
         <h2>De onde vêm seus pedidos?</h2>
         <div class="options">
           <button class="opt" data-q="canal" data-val="ifood">iFood</button>
@@ -77,11 +93,16 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       </section>
 
       <!-- RESULT -->
-      <section class="step" data-step="5">
+      <section class="step" data-step="6">
         <div class="badge">Feito pro seu caso</div>
         <h2 id="result-title">O Tregou resolve exatamente isso</h2>
         <p class="result-intro" id="result-intro"></p>
-        <ul class="solve-list" id="solve-list"></ul>
+        <div class="outcomes">
+          <div class="oc"><span class="ck">✓</span><span>Menos atraso e menos reclamação de cliente</span></div>
+          <div class="oc"><span class="ck">✓</span><span>Mais entregas com a mesma equipe — menos custo por pedido</span></div>
+          <div class="oc"><span class="ck">✓</span><span>Menos tempo perdido decidindo e despachando</span></div>
+          <div class="oc"><span class="ck">✓</span><span>Você enxerga tudo ao vivo, do preparo à porta</span></div>
+        </div>
         <div class="founding">🚀 As <b>50 primeiras</b> restaurantes viram <b>Fundadoras</b>: preço travado, prioridade e IA liberada.</div>
         <div class="actions">
           <a class="btn btn-primary" id="go-signup" data-base={config.signupLink} href={config.signupLink} target="_blank" rel="noopener noreferrer">Criar conta grátis</a>
@@ -129,21 +150,24 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     .options { display: grid; gap: 11px; margin-top: 22px; }
     .opt {
       font: inherit; text-align: left; cursor: pointer; background: var(--surface);
-      border: 1.5px solid var(--line); border-radius: 13px; padding: 16px 18px;
+      border: 1.5px solid var(--line); border-radius: 13px; padding: 16px 18px; width: 100%;
       font-size: 1.02rem; font-weight: 550; color: var(--ink);
-      transition: border-color .15s, background .15s, transform .1s;
+      transition: border-color .18s ease, background .18s ease, box-shadow .18s ease, transform .12s ease;
       display: flex; align-items: center; justify-content: space-between; gap: 12px;
     }
     .opt::after { content: "→"; color: var(--line); font-weight: 700; transition: color .15s, transform .15s; }
     .opt:hover { border-color: var(--g); background: var(--g-tint); }
     .opt:hover::after { color: var(--g); transform: translateX(3px); }
+    .opt:active { transform: scale(0.985); }
     .opt:focus-visible { outline: 2px solid var(--g); outline-offset: 2px; }
 
     .multi-hint { font-size: 0.9rem; color: var(--muted); margin-top: 4px; }
     .opt-check::after { content: ""; width: 20px; height: 20px; border: 1.8px solid var(--line); border-radius: 6px; display: grid; place-items: center; font-size: 0.78rem; font-weight: 800; color: #fff; transition: background .15s, border-color .15s; }
     .opt-check:hover::after { transform: none; }
-    .opt-check.selected { border-color: var(--g); background: var(--g-tint); }
-    .opt-check.selected::after { content: "✓"; background: var(--g); border-color: var(--g); }
+    .opt-check.selected { border-color: var(--g); background: var(--g-tint); box-shadow: 0 6px 18px -8px rgba(43, 147, 72, 0.45); }
+    .opt-check.selected::after { content: "✓"; background: var(--g); border-color: var(--g); animation: chkpop .22s ease; }
+    @keyframes chkpop { 0% { transform: scale(0.55); } 55% { transform: scale(1.12); } 100% { transform: scale(1); } }
+    @media (prefers-reduced-motion: reduce) { .opt-check.selected::after { animation: none; } }
     .continue:disabled { opacity: 0.45; pointer-events: none; }
 
     .btn {
@@ -164,11 +188,9 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     .badge { display: inline-block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--g-deep); background: var(--g-tint); border: 1px solid var(--g); border-radius: 100px; padding: 5px 12px; margin-bottom: 12px; }
     .result-intro { color: var(--muted); font-size: 1rem; line-height: 1.5; margin-top: 4px; }
     .result-intro b { color: var(--ink); font-weight: 650; }
-    .solve-list { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 10px; }
-    .solve-item { display: flex; gap: 12px; align-items: flex-start; background: var(--g-tint); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
-    .solve-item .chk { flex: 0 0 auto; width: 22px; height: 22px; border-radius: 7px; background: var(--g); color: #fff; display: grid; place-items: center; font-weight: 800; font-size: 0.8rem; margin-top: 1px; }
-    .solve-pain { font-weight: 700; font-size: 0.93rem; color: var(--ink); display: block; }
-    .solve-fix { font-size: 0.88rem; color: var(--muted); display: block; margin-top: 2px; line-height: 1.4; }
+    .outcomes { display: grid; gap: 10px; margin: 16px 0 0; text-align: left; }
+    .oc { display: flex; align-items: flex-start; gap: 11px; font-size: 0.98rem; color: var(--ink); font-weight: 600; line-height: 1.4; }
+    .oc .ck { flex: 0 0 auto; width: 22px; height: 22px; border-radius: 7px; background: var(--g); color: #fff; display: grid; place-items: center; font-weight: 800; font-size: 0.78rem; margin-top: 1px; }
     .founding { margin-top: 20px; background: #fdf3d6; border: 1px solid var(--amber); border-radius: 12px; padding: 12px 15px; font-size: 0.92rem; color: #7a5200; }
     .founding b { color: #7a5200; }
     .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
@@ -192,7 +214,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       const bar = document.getElementById('bar');
       const back = document.getElementById('back');
       const answers = {};
-      const TOTAL_Q = 4; // questions 1..4; step 5 is the result
+      const TOTAL_Q = 5; // questions 1..5; last step is the result
       let cur = 0;
 
       function show(n) {
@@ -220,38 +242,30 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
         })
       );
 
-      // multi-choice (pain) → toggle, then "Continuar"
-      const painSet = new Set();
-      const continueBtn = document.querySelector('[data-continue]');
-      document.querySelectorAll('.opt-check').forEach((o) =>
-        o.addEventListener('click', () => {
-          const v = o.dataset.val;
-          if (painSet.has(v)) { painSet.delete(v); o.classList.remove('selected'); }
-          else { painSet.add(v); o.classList.add('selected'); }
-          if (continueBtn) continueBtn.disabled = painSet.size === 0;
-        })
-      );
-      if (continueBtn)
-        continueBtn.addEventListener('click', () => {
-          answers.pain = Array.from(painSet);
-          show(cur + 1);
-        });
+      // multi-choice steps (pain, help) → toggle, then "Continuar" (per step)
+      document.querySelectorAll('.step').forEach((step) => {
+        const checks = step.querySelectorAll('.opt-check');
+        if (!checks.length) return;
+        const q = checks[0].dataset.q;
+        const set = new Set();
+        const contBtn = step.querySelector('[data-continue]');
+        checks.forEach((o) =>
+          o.addEventListener('click', () => {
+            const v = o.dataset.val;
+            if (set.has(v)) { set.delete(v); o.classList.remove('selected'); }
+            else { set.add(v); o.classList.add('selected'); }
+            if (contBtn) contBtn.disabled = set.size === 0;
+          })
+        );
+        if (contBtn)
+          contBtn.addEventListener('click', () => {
+            answers[q] = Array.from(set);
+            show(cur + 1);
+          });
+      });
 
       back.addEventListener('click', () => show(cur - 1));
 
-      // Each selected pain (step 3) is mirrored back with its concrete solution.
-      const PAIN_LABEL = {
-        decidir: 'Decidir quem leva cada pedido',
-        atraso: 'Pedidos atrasando e cliente reclamando',
-        visao: 'Não saber onde está cada entrega',
-        equipe: 'Sua equipe não dá conta no pico',
-      };
-      const PAIN = {
-        decidir: 'Distribui cada pedido sozinho pro entregador certo, juntando as entregas do mesmo caminho.',
-        atraso: 'Prioriza cada entrega pelo prazo e remaneja sozinho se um entregador some.',
-        visao: 'Mostra cada entregador no mapa ao vivo, do preparo até a porta do cliente.',
-        equipe: 'Faz sua equipe render mais: entregas agrupadas pra cobrir mais pedidos com a mesma gente.',
-      };
       const CANAL_SHORT = {
         ifood: 'do iFood',
         whats: 'do WhatsApp e telefone',
@@ -264,47 +278,16 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
         app: 'Pra você ganhar autonomia além do app de entrega',
       };
       const SIZE = { p: 'com 1 a 2 entregadores', m: 'com 3 a 5 entregadores', g: 'com 6 ou mais entregadores' };
-      const CANAL = {
-        ifood: 'Seus pedidos do iFood entram automaticamente',
-        whats: 'Seus pedidos de WhatsApp e telefone você lança em segundos',
-        misto: 'Seus pedidos do iFood e dos outros canais entram no mesmo lugar',
-        balcao: 'Seus pedidos entram todos no mesmo lugar',
-      };
 
+      // Result is a clean closing statement — the solutions were already shown
+      // inline during step 3, as each pain was selected.
       function buildResult() {
-        // Short context line (mirrors fleet / size / channel).
         let intro = OPEN[answers.fleet] || 'Pro seu restaurante';
         if (answers.size && answers.fleet !== 'app') intro += ', ' + SIZE[answers.size];
         if (CANAL_SHORT[answers.canal]) intro += ', que recebe pedidos ' + CANAL_SHORT[answers.canal];
-        intro += ' — veja como o Tregou resolve o que você marcou:';
+        intro += ' — o Tregou faz isso no automático. Veja o que muda no seu dia:';
         const introEl = document.getElementById('result-intro');
         if (introEl) introEl.textContent = intro;
-
-        // One "problem → solution" card per selected pain (step 3).
-        const list = document.getElementById('solve-list');
-        if (!list) return;
-        list.innerHTML = '';
-        const pains = answers.pain && answers.pain.length ? answers.pain : ['decidir'];
-        pains.forEach(function (v) {
-          if (!PAIN[v]) return;
-          const li = document.createElement('li');
-          li.className = 'solve-item';
-          const chk = document.createElement('span');
-          chk.className = 'chk';
-          chk.textContent = '✓';
-          const body = document.createElement('div');
-          const pain = document.createElement('span');
-          pain.className = 'solve-pain';
-          pain.textContent = PAIN_LABEL[v] || '';
-          const fix = document.createElement('span');
-          fix.className = 'solve-fix';
-          fix.textContent = PAIN[v];
-          body.appendChild(pain);
-          body.appendChild(fix);
-          li.appendChild(chk);
-          li.appendChild(body);
-          list.appendChild(li);
-        });
       }
 
       // Attribution: carry the answers into the signup link so a conversion
@@ -317,6 +300,8 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
         if (answers.size) p.set('size', answers.size);
         if (answers.pain && answers.pain.length)
           p.set('pain', Array.isArray(answers.pain) ? answers.pain.join(',') : answers.pain);
+        if (answers.help && answers.help.length)
+          p.set('help', Array.isArray(answers.help) ? answers.help.join(',') : answers.help);
         if (answers.canal) p.set('canal', answers.canal);
         const base = a.dataset.base;
         a.href = base + (base.indexOf('?') >= 0 ? '&' : '?') + p.toString();
@@ -327,7 +312,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       let saved = false;
       function saveResponse() {
         if (saved) return;
-        if (!answers.fleet && !answers.pain && !answers.size && !answers.canal) return; // nothing answered
+        if (!answers.fleet && !answers.pain && !answers.help && !answers.size && !answers.canal) return; // nothing answered
         const sb = window.__SB || {};
         if (!sb.url || !sb.key) return;
         saved = true;
@@ -344,6 +329,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
               fleet: answers.fleet || null,
               size: answers.size || null,
               pains: answers.pain || null,
+              help: answers.help || null,
               canal: answers.canal || null,
               source: 'landing-quiz',
               referrer: document.referrer || null,
