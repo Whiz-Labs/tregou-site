@@ -80,16 +80,18 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
         <button class="btn btn-primary continue" data-continue disabled>Continuar</button>
       </section>
 
-      <!-- 5 · canal -->
+      <!-- 5 · canal (multi-select) -->
       <section class="step" data-step="5">
         <p class="q-count">Pergunta 5 de 5</p>
         <h2>De onde vêm seus pedidos?</h2>
+        <p class="multi-hint">Pode marcar mais de um.</p>
         <div class="options">
-          <button class="opt" data-q="canal" data-val="ifood">iFood</button>
-          <button class="opt" data-q="canal" data-val="whats">WhatsApp e telefone</button>
-          <button class="opt" data-q="canal" data-val="misto">iFood + outros canais</button>
-          <button class="opt" data-q="canal" data-val="balcao">Balcão / retirada</button>
+          <button class="opt opt-check" data-q="canal" data-val="ifood">iFood</button>
+          <button class="opt opt-check" data-q="canal" data-val="whats">WhatsApp e telefone</button>
+          <button class="opt opt-check" data-q="canal" data-val="apps">Outros apps (Rappi, 99…)</button>
+          <button class="opt opt-check" data-q="canal" data-val="balcao">Balcão / retirada</button>
         </div>
+        <button class="btn btn-primary continue" data-continue disabled>Continuar</button>
       </section>
 
       <!-- RESULT -->
@@ -108,7 +110,15 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
           <a class="btn btn-primary" id="go-signup" data-base={config.signupLink} href={config.signupLink} target="_blank" rel="noopener noreferrer">Criar conta grátis</a>
           <a class="btn btn-outline" href={config.presentationLink} target="_blank" rel="noopener noreferrer">Ver a apresentação</a>
         </div>
-        <a class="wa" href={config.whatsappLink} target="_blank" rel="noopener noreferrer">Prefere falar antes? Fale no WhatsApp</a>
+        <div class="wa-form" id="wa-form">
+          <label class="wa-label" for="wa-num">Quer que a gente te ajude a começar? Deixe seu WhatsApp</label>
+          <div class="wa-row">
+            <input class="wa-input" id="wa-num" type="tel" inputmode="tel" autocomplete="tel" placeholder="(11) 99999-9999" />
+            <button class="btn btn-primary wa-send" id="wa-send" type="button">Enviar</button>
+          </div>
+          <p class="wa-consent">Ao deixar seu WhatsApp, você aceita receber contato do Tregou sobre o produto. Opcional.</p>
+          <p class="wa-sent">✓ Recebido! A gente entra em contato em breve. 💚</p>
+        </div>
       </section>
 
       <button class="back" id="back" hidden>← Voltar</button>
@@ -120,14 +130,14 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       --g: #2b9348; --g-deep: #1b6e36; --g-tint: #e4f1e7; --amber: #f9c74f;
       --ink: #16211b; --muted: #5c6b62; --line: #e3ebe0;
       --bg: #f5f8f3; --surface: #ffffff;
-      min-height: 100dvh; display: grid; place-items: center;
+      min-height: 100dvh; display: grid; place-items: safe center;
       background: radial-gradient(120% 80% at 80% -10%, var(--g-tint), var(--bg));
-      padding: 24px; color: var(--ink);
+      padding: clamp(14px, 4vw, 28px); color: var(--ink);
     }
     .card {
       width: 100%; max-width: 560px; background: var(--surface);
       border: 1px solid var(--line); border-radius: 22px;
-      padding: clamp(24px, 5vw, 44px); position: relative;
+      padding: clamp(20px, 5vw, 44px); position: relative;
       box-shadow: 0 30px 70px -34px rgba(20, 60, 35, 0.4);
     }
     .bar { height: 6px; background: var(--g-tint); border-radius: 100px; overflow: hidden; margin-bottom: 26px; }
@@ -182,7 +192,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     .btn-outline { background: var(--surface); color: var(--g-deep); border-color: var(--line); }
     .btn-outline:hover { border-color: var(--g); background: var(--g-tint); }
 
-    .skip { display: block; margin: 16px auto 0; background: none; border: none; color: var(--muted); font: inherit; font-size: 0.92rem; text-decoration: underline; cursor: pointer; }
+    .skip { display: block; margin: 16px 0 0; padding: 0; text-align: left; background: none; border: none; color: var(--muted); font: inherit; font-size: 0.92rem; text-decoration: underline; cursor: pointer; }
     .skip:hover { color: var(--g-deep); }
 
     .badge { display: inline-block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--g-deep); background: var(--g-tint); border: 1px solid var(--g); border-radius: 100px; padding: 5px 12px; margin-bottom: 12px; }
@@ -195,8 +205,19 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     .founding b { color: #7a5200; }
     .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
     .actions .btn { margin-top: 0; flex: 1 1 auto; }
-    .wa { display: inline-block; margin-top: 16px; color: var(--muted); font-size: 0.95rem; }
-    .wa:hover { color: var(--g-deep); }
+    .wa-form { margin-top: 18px; text-align: left; }
+    .wa-label { display: block; font-size: 0.95rem; font-weight: 650; color: var(--ink); margin-bottom: 8px; }
+    .wa-row { display: flex; gap: 8px; }
+    .wa-input { flex: 1; min-width: 0; font: inherit; font-size: 1rem; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 12px; color: var(--ink); background: var(--surface); }
+    .wa-input:focus { outline: none; border-color: var(--g); box-shadow: 0 0 0 3px var(--g-tint); }
+    .wa-send { margin-top: 0; padding: 12px 22px; flex: 0 0 auto; }
+    .wa-consent { font-size: 0.8rem; color: var(--muted); margin-top: 8px; line-height: 1.4; }
+    .wa-sent { display: none; color: var(--g-deep); font-weight: 650; font-size: 0.95rem; margin-top: 4px; }
+    .wa-form[data-sent="true"] .wa-label,
+    .wa-form[data-sent="true"] .wa-row,
+    .wa-form[data-sent="true"] .wa-consent { display: none; }
+    .wa-form[data-sent="true"] .wa-sent { display: block; }
+    @media (max-width: 420px) { .wa-row { flex-direction: column; } .wa-send { width: 100%; } }
 
     .back { position: absolute; top: 18px; right: 20px; background: none; border: none; color: var(--muted); font: inherit; font-size: 0.88rem; cursor: pointer; }
     .back:hover { color: var(--g-deep); }
@@ -267,10 +288,10 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       back.addEventListener('click', () => show(cur - 1));
 
       const CANAL_SHORT = {
-        ifood: 'do iFood',
-        whats: 'do WhatsApp e telefone',
-        misto: 'do iFood e de outros canais',
-        balcao: 'no balcão',
+        ifood: 'iFood',
+        whats: 'WhatsApp e telefone',
+        apps: 'outros apps',
+        balcao: 'balcão',
       };
       const OPEN = {
         sim: 'Pra um negócio que já tem equipe própria de entrega',
@@ -284,7 +305,13 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       function buildResult() {
         let intro = OPEN[answers.fleet] || 'Pro seu negócio';
         if (answers.size && answers.fleet !== 'app') intro += ', ' + SIZE[answers.size];
-        if (CANAL_SHORT[answers.canal]) intro += ', que recebe pedidos ' + CANAL_SHORT[answers.canal];
+        if (answers.canal && answers.canal.length) {
+          const cs = answers.canal.map(function (v) { return CANAL_SHORT[v]; }).filter(Boolean);
+          if (cs.length) {
+            const joined = cs.length === 1 ? cs[0] : cs.slice(0, -1).join(', ') + ' e ' + cs[cs.length - 1];
+            intro += ', que recebe pedidos de ' + joined;
+          }
+        }
         intro += ' — o Tregou faz isso no automático. Veja o que muda no seu dia:';
         const introEl = document.getElementById('result-intro');
         if (introEl) introEl.textContent = intro;
@@ -302,22 +329,32 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
           p.set('pain', Array.isArray(answers.pain) ? answers.pain.join(',') : answers.pain);
         if (answers.help && answers.help.length)
           p.set('help', Array.isArray(answers.help) ? answers.help.join(',') : answers.help);
-        if (answers.canal) p.set('canal', answers.canal);
+        if (answers.canal && answers.canal.length)
+          p.set('canal', Array.isArray(answers.canal) ? answers.canal.join(',') : answers.canal);
         const base = a.dataset.base;
         a.href = base + (base.indexOf('?') >= 0 ? '&' : '?') + p.toString();
       }
 
       // Store the anonymous response in Supabase (insert-only via the public anon
       // key). Fire-and-forget: never blocks the UI, silently skips if unconfigured.
-      let saved = false;
-      function saveResponse() {
-        if (saved) return;
-        if (!answers.fleet && !answers.pain && !answers.help && !answers.size && !answers.canal) return; // nothing answered
+      // Post a response row to Supabase (insert-only via public anon key).
+      // Fire-and-forget; no-ops if unconfigured. `extra` overrides base fields.
+      function postResponse(extra) {
         const sb = window.__SB || {};
-        if (!sb.url || !sb.key) return;
-        saved = true;
+        if (!sb.url || !sb.key) return Promise.resolve(false);
+        const body = {
+          fleet: answers.fleet || null,
+          size: answers.size || null,
+          pains: answers.pain || null,
+          help: answers.help || null,
+          canal: answers.canal || null,
+          source: 'landing-quiz',
+          referrer: document.referrer || null,
+          user_agent: navigator.userAgent || null,
+        };
+        for (var k in (extra || {})) body[k] = extra[k];
         try {
-          fetch(sb.url.replace(/\/$/, '') + '/rest/v1/quiz_responses', {
+          return fetch(sb.url.replace(/\/$/, '') + '/rest/v1/quiz_responses', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -325,20 +362,36 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
               Authorization: 'Bearer ' + sb.key,
               Prefer: 'return=minimal',
             },
-            body: JSON.stringify({
-              fleet: answers.fleet || null,
-              size: answers.size || null,
-              pains: answers.pain || null,
-              help: answers.help || null,
-              canal: answers.canal || null,
-              source: 'landing-quiz',
-              referrer: document.referrer || null,
-              user_agent: navigator.userAgent || null,
-            }),
+            body: JSON.stringify(body),
             keepalive: true,
-          }).catch(function () {});
-        } catch (e) {}
+          }).then(function (r) { return r.ok; }).catch(function () { return false; });
+        } catch (e) { return Promise.resolve(false); }
       }
+
+      // Anonymous capture the moment the result shows (everyone, even bounces).
+      let saved = false;
+      function saveResponse() {
+        if (saved) return;
+        if (!answers.fleet && !answers.pain && !answers.help && !answers.size && !answers.canal) return;
+        saved = true;
+        postResponse();
+      }
+
+      // Optional WhatsApp contact — opt-in by voluntarily entering the number,
+      // with the visible consent notice next to the field.
+      (function () {
+        const form = document.getElementById('wa-form');
+        if (!form) return;
+        const input = document.getElementById('wa-num');
+        const btn = document.getElementById('wa-send');
+        btn.addEventListener('click', function () {
+          const num = (input.value || '').trim();
+          if (num.replace(/\D/g, '').length < 10) { input.focus(); return; }
+          btn.disabled = true;
+          postResponse({ whatsapp: num, contact_consent: true, source: 'landing-quiz-contact' })
+            .then(function () { form.setAttribute('data-sent', 'true'); });
+        });
+      })();
     })();
   </script>
 </BaseLayout>
