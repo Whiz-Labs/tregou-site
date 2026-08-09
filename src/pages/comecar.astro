@@ -118,7 +118,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
           <label class="wa-label" for="wa-num">Ainda em dúvida? Deixe seu WhatsApp e a gente te explica</label>
           <div class="wa-row">
             <input class="wa-input" id="wa-num" type="tel" inputmode="tel" autocomplete="tel" placeholder="(11) 99999-9999" />
-            <button class="btn btn-primary wa-send" id="wa-send" data-ev="quiz_whatsapp" type="button">Enviar</button>
+            <button class="btn btn-primary wa-send" id="wa-send" type="button">Enviar</button>
           </div>
           <p class="wa-consent">Ao deixar seu WhatsApp, você aceita receber contato do Tregou sobre o produto. Opcional.</p>
           <p class="wa-sent">✓ Recebido! A gente entra em contato em breve. 💚</p>
@@ -435,6 +435,9 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
           const num = (input.value || '').trim();
           if (num.replace(/\D/g, '').length < 10) { input.focus(); return; }
           btn.disabled = true;
+          // Tracked here rather than with data-ev so the number counts people
+          // who actually left a WhatsApp, not everyone who pressed the button.
+          if (window.__tgTrack) window.__tgTrack('cta_click', 'quiz_whatsapp');
           postResponse({ whatsapp: num, contact_consent: true, source: 'landing-quiz-contact' })
             .then(function () { form.setAttribute('data-sent', 'true'); });
         });
