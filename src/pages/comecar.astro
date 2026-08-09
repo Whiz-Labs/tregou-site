@@ -30,8 +30,8 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
         <span class="chip">5 perguntas · 30 segundos</span>
         <h1>Veja como o Tregou funciona <span class="hl">pro seu negócio</span></h1>
         <p class="lead">A gente te mostra exatamente onde ele te ajuda — e quanto tempo isso economiza.</p>
-        <button class="btn btn-primary" data-next>Começar <span class="ar">→</span></button>
-        <button class="skip" data-goto-result data-ready>Já sei que quero — criar conta grátis</button>
+        <button class="btn btn-primary" data-ev="quiz_start" data-next>Começar <span class="ar">→</span></button>
+        <button class="skip" data-ev="quiz_skip" data-goto-result data-ready>Já sei que quero — criar conta grátis</button>
       </section>
 
       <!-- 1 -->
@@ -112,13 +112,13 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
           <div class="oc"><span class="ck">✓</span><span>Você enxerga tudo ao vivo, do preparo à porta</span></div>
         </div>
         <div class="founding">As <b>50 primeiras</b> a entrar viram <b>Fundadoras</b> — preço travado e IA liberada.</div>
-        <a class="btn btn-primary btn-block" id="go-signup" data-base={config.signupLink} href={config.signupLink} target="_blank" rel="noopener noreferrer">Criar conta grátis</a>
+        <a class="btn btn-primary btn-block" id="go-signup" data-ev="quiz_signup" data-base={config.signupLink} href={config.signupLink} target="_blank" rel="noopener noreferrer">Criar conta grátis</a>
         <p class="cta-note">Sem cartão, sem compromisso. Leva 2 minutos.</p>
         <div class="wa-form" id="wa-form">
           <label class="wa-label" for="wa-num">Ainda em dúvida? Deixe seu WhatsApp e a gente te explica</label>
           <div class="wa-row">
             <input class="wa-input" id="wa-num" type="tel" inputmode="tel" autocomplete="tel" placeholder="(11) 99999-9999" />
-            <button class="btn btn-primary wa-send" id="wa-send" type="button">Enviar</button>
+            <button class="btn btn-primary wa-send" id="wa-send" data-ev="quiz_whatsapp" type="button">Enviar</button>
           </div>
           <p class="wa-consent">Ao deixar seu WhatsApp, você aceita receber contato do Tregou sobre o produto. Opcional.</p>
           <p class="wa-sent">✓ Recebido! A gente entra em contato em breve. 💚</p>
@@ -418,6 +418,9 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
         if (saved) return;
         if (!answers.fleet && !answers.pain && !answers.help && !answers.size && !answers.canal) return;
         saved = true;
+        // Funnel milestone: they answered and reached the result (skippers,
+        // who jump straight to it, are excluded by the guard above).
+        if (window.__tgTrack) window.__tgTrack('milestone', 'quiz_complete');
         postResponse();
       }
 

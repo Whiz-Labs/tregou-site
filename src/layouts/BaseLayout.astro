@@ -12,6 +12,11 @@ const {
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+// Anonymous traffic + CTA click log (see supabase/migrations/045_site_events.sql).
+// Same public anon key as the quiz: RLS allows insert-only. Unset env → no-op.
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 ---
 
 <!doctype html>
@@ -58,6 +63,83 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   </head>
   <body>
     <slot />
+
+    <!--
+      Cookieless analytics. Logs one pageview per load and every click on an
+      element carrying data-ev="<cta-id>", so we can see which CTA people
+      actually use — the signup form stores the matching ?src=, which closes
+      the funnel on the panel side. The session id is a random per-tab value in
+      sessionStorage (not a cookie, not persisted), and no IP is stored, so this
+      needs no consent banner. Fire-and-forget: never blocks a navigation.
+    -->
+    <script is:inline define:vars={{ sbUrl: SUPABASE_URL, sbKey: SUPABASE_ANON_KEY }}>
+      (function () {
+        if (!sbUrl || !sbKey) return;
+
+        var endpoint = sbUrl.replace(/\/$/, '') + '/rest/v1/site_events';
+        var sid = null;
+        try {
+          sid = sessionStorage.getItem('tg_sid');
+          if (!sid) {
+            sid = Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+            sessionStorage.setItem('tg_sid', sid);
+          }
+        } catch (e) { /* private mode — the event still counts, just unlinked */ }
+
+        // Campaign context, if the visit carried any.
+        var utm = null;
+        try {
+          var qs = new URLSearchParams(location.search);
+          ['src', 'utm_source', 'utm_medium', 'utm_campaign'].forEach(function (k) {
+            var v = qs.get(k);
+            if (v) {
+              utm = utm || {};
+              utm[k.replace('utm_', '')] = v.slice(0, 64);
+            }
+          });
+        } catch (e) { /* ignore */ }
+
+        function track(event, name) {
+          try {
+            return fetch(endpoint, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                apikey: sbKey,
+                Authorization: 'Bearer ' + sbKey,
+                Prefer: 'return=minimal',
+              },
+              body: JSON.stringify({
+                event: event,
+                name: name ? String(name).slice(0, 48) : null,
+                path: location.pathname.slice(0, 200),
+                session_id: sid,
+                referrer: document.referrer ? document.referrer.slice(0, 500) : null,
+                user_agent: (navigator.userAgent || '').slice(0, 400),
+                utm: utm,
+              }),
+              // Survives the navigation the click is about to trigger.
+              keepalive: true,
+            }).catch(function () {});
+          } catch (e) { return Promise.resolve(); }
+        }
+
+        track('pageview');
+
+        // Capture phase so a handler that stops propagation can't hide the click.
+        document.addEventListener(
+          'click',
+          function (e) {
+            var el = e.target && e.target.closest ? e.target.closest('[data-ev]') : null;
+            if (el) track('cta_click', el.getAttribute('data-ev'));
+          },
+          true
+        );
+
+        // Let page scripts log their own milestones (e.g. the quiz result).
+        window.__tgTrack = track;
+      })();
+    </script>
   </body>
 </html>
 
