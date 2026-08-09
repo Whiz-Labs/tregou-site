@@ -15,8 +15,12 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 >
   <main class="quiz">
     <div class="card" data-intro="true">
-      <!-- Hidden on the intro, where a 0% bar reads as a stray line. -->
-      <div class="bar" id="bar-wrap" aria-hidden="true"><div class="bar-fill" id="bar"></div></div>
+      <!-- Progress and "back" share one row, so the button can't sit on top of
+           the track. Both are meaningless on the intro — the row is dropped. -->
+      <div class="topbar">
+        <div class="bar" aria-hidden="true"><div class="bar-fill" id="bar"></div></div>
+        <button class="back" id="back" hidden>← Voltar</button>
+      </div>
 
       <!-- 0 · INTRO -->
       <section class="step is-active" data-step="0">
@@ -121,7 +125,6 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
         </div>
       </section>
 
-      <button class="back" id="back" hidden>← Voltar</button>
     </div>
   </main>
 
@@ -143,9 +146,12 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       padding: clamp(22px, 4vw, 36px); position: relative;
       box-shadow: 0 1px 2px rgba(20, 60, 35, 0.05), 0 24px 60px -30px rgba(20, 60, 35, 0.42);
     }
-    .bar { height: 5px; background: var(--g-tint); border-radius: 100px; overflow: hidden; margin-bottom: 24px; transition: opacity .3s ease; }
-    /* Intro has no progress to show — a 0% bar just reads as a stray rule. */
-    .card[data-intro="true"] .bar { opacity: 0; }
+    .topbar { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; min-height: 22px; }
+    .bar { flex: 1; height: 5px; background: var(--g-tint); border-radius: 100px; overflow: hidden; }
+    /* Intro has no progress and nothing to go back to — a 0% bar reads as a
+       stray rule, and hiding it with opacity alone would leave an unexplained
+       gap above the logo. Take the space back too, not just the ink. */
+    .card[data-intro="true"] .topbar { display: none; }
     .bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--g), var(--g-deep)); border-radius: 100px; transition: width .4s ease; }
 
     .chip {
@@ -159,12 +165,12 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
     @media (prefers-reduced-motion: reduce) { .step.is-active { animation: none; } .bar-fill { transition: none; } }
 
-    .brand { margin-bottom: 22px; }
-    .brand img { height: 30px; width: auto; }
+    .brand { margin-bottom: 20px; }
+    .brand img { height: 32px; width: auto; }
 
     h1 { font-size: clamp(1.6rem, 4.5vw, 2.3rem); line-height: 1.1; letter-spacing: -0.03em; font-weight: 700; text-wrap: balance; }
     .hl { color: var(--g); }
-    .lead { color: var(--muted); margin-top: 12px; font-size: 1.05rem; }
+    .lead { color: var(--muted); margin-top: 12px; font-size: 1.02rem; line-height: 1.5; max-width: 34ch; text-wrap: pretty; }
     h2 { font-size: clamp(1.3rem, 3.6vw, 1.75rem); line-height: 1.15; letter-spacing: -0.02em; font-weight: 700; text-wrap: balance; }
     .q-count { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--g-deep); margin-bottom: 8px; }
 
@@ -239,8 +245,9 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     .wa-form[data-sent="true"] .wa-sent { display: block; }
     @media (max-width: 420px) { .wa-row { flex-direction: column; } .wa-send { width: 100%; } }
 
-    .back { position: absolute; top: 18px; right: 20px; background: none; border: none; color: var(--muted); font: inherit; font-size: 0.88rem; cursor: pointer; }
+    .back { flex: 0 0 auto; padding: 0; background: none; border: none; color: var(--muted); font: inherit; font-size: 0.88rem; font-weight: 500; cursor: pointer; }
     .back:hover { color: var(--g-deep); }
+    .back[hidden] { display: none; }
 
     @media (max-width: 480px) { .actions .btn { flex-basis: 100%; } }
   </style>
