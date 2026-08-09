@@ -107,9 +107,9 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
         </div>
         <div class="founding">As <b>50 primeiras</b> a entrar viram <b>Fundadoras</b> — preço travado e IA liberada.</div>
         <a class="btn btn-primary btn-block" id="go-signup" data-base={config.signupLink} href={config.signupLink} target="_blank" rel="noopener noreferrer">Criar conta grátis</a>
-        <a class="tlink" href={config.presentationLink} target="_blank" rel="noopener noreferrer">Ver a apresentação →</a>
+        <p class="cta-note">Sem cartão, sem compromisso. Leva 2 minutos.</p>
         <div class="wa-form" id="wa-form">
-          <label class="wa-label" for="wa-num">Prefere que a gente te chame? Deixe seu WhatsApp</label>
+          <label class="wa-label" for="wa-num">Ainda em dúvida? Deixe seu WhatsApp e a gente te explica</label>
           <div class="wa-row">
             <input class="wa-input" id="wa-num" type="tel" inputmode="tel" autocomplete="tel" placeholder="(11) 99999-9999" />
             <button class="btn btn-primary wa-send" id="wa-send" type="button">Enviar</button>
@@ -202,8 +202,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     .founding { margin-top: 18px; padding: 3px 0 3px 14px; border-left: 3px solid var(--amber); font-size: 0.9rem; color: var(--muted); line-height: 1.45; }
     .founding b { color: var(--ink); font-weight: 700; }
     .btn-block { width: 100%; }
-    .tlink { display: inline-block; margin-top: 14px; color: var(--g-deep); font-weight: 600; font-size: 0.95rem; text-decoration: none; }
-    .tlink:hover { text-decoration: underline; }
+    .cta-note { margin-top: 10px; font-size: 0.88rem; color: var(--muted); text-align: center; }
     .wa-form { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); text-align: left; }
     .wa-label { display: block; font-size: 0.9rem; font-weight: 600; color: var(--muted); margin-bottom: 8px; }
     .wa-row { display: flex; gap: 8px; }
