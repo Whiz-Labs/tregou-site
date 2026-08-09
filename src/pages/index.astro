@@ -22,6 +22,14 @@ const { whatsappLink, presentationLink, signupLink } = config;
 
       <div class="hero-main">
       <div class="hero-content">
+        <!-- The founding offer used to live only in the footer, where most
+             visitors never arrive. It is the strongest thing we have to say,
+             so it goes above the headline. -->
+        <a href={`${signupLink}?src=hero-vagas`} class="hero-flag" data-ev="hero_fundadoras" target="_blank" rel="noopener">
+          <svg class="flag-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+          <span class="flag-tx">Abrimos as <b>10 primeiras vagas</b> de Fundadora</span>
+          <span class="flag-go" aria-hidden="true">→</span>
+        </a>
         <h1>Entregas mais <span class="gradient-text">rápidas</span> e <span class="gradient-text">inteligentes</span></h1>
         <p class="hero-subtitle">
           Pra restaurantes, farmácias e qualquer negócio que entrega: seus pedidos do iFood,
@@ -40,7 +48,7 @@ const { whatsappLink, presentationLink, signupLink } = config;
               <span class="cta-badge">30s</span>
             </a>
           </div>
-          <span class="cta-hint">Grátis pra testar. Sem cartão, leva 2 minutos.</span>
+          <span class="cta-hint">Fundadora tem <b>60 dias grátis</b> e preço travado. Sem cartão, leva 2 minutos.</span>
         </div>
       </div>
 
@@ -345,7 +353,7 @@ const { whatsappLink, presentationLink, signupLink } = config;
           <span class="soon-badge">Em breve</span>
           <div class="p-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg></div>
           <h3>Cardápio com IA</h3>
-          <p>Pra restaurantes: monte seu cardápio a partir de uma foto. Liberação gradual pros primeiros 100.</p>
+          <p>Pra restaurantes: monte seu cardápio a partir de uma foto. Liberação gradual, começando pelas Fundadoras.</p>
         </div>
       </div>
     </div>
@@ -358,7 +366,7 @@ const { whatsappLink, presentationLink, signupLink } = config;
         <img src="/tregou-logo.png" alt="Tregou" class="cta-logo" />
         <h2>Comece hoje — é grátis pra testar</h2>
         <p>Crie sua conta e veja o Tregou distribuindo seus pedidos hoje mesmo. Sem cartão, sem compromisso.</p>
-        <div class="founding-note"><span class="fn-ic">🚀</span><span class="fn-tx">As <b>50 primeiras</b> viram <b>Fundadoras</b>: preço travado, prioridade e IA liberada.</span></div>
+        <div class="founding-note"><span class="fn-ic">🔥</span><span class="fn-tx">Estamos abrindo as <b>10 primeiras vagas</b>. Quem entra agora vira <b class="w">Fundadora</b>: <b>60 dias grátis</b>, a gente configura sua operação junto com você e seu <b>preço fica travado pra sempre</b>.</span></div>
         <div class="cta-actions">
           <a href={`${signupLink}?src=footer`} class="cta-button cta-button-presentation cta-button-large" data-ev="footer_signup" target="_blank" rel="noopener">
             Criar conta grátis
@@ -514,6 +522,67 @@ const { whatsappLink, presentationLink, signupLink } = config;
     max-width: 640px;
   }
 
+  /* Founding-cohort flag. Amber against the dark hero so it reads before the
+     headline, but it stays a pill — it announces the offer, the button below
+     is still what converts. */
+  .hero-flag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+    padding: 0.45rem 0.5rem 0.45rem 0.75rem;
+    border-radius: 100px;
+    background: rgba(249, 199, 79, 0.12);
+    border: 1px solid rgba(249, 199, 79, 0.42);
+    color: var(--color-gray-200);
+    font-size: 0.875rem;
+    line-height: 1.3;
+    text-decoration: none;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+  }
+
+  .hero-flag:hover {
+    background: rgba(249, 199, 79, 0.2);
+    border-color: rgba(249, 199, 79, 0.75);
+    text-decoration: none;
+    transform: translateY(-1px);
+  }
+
+  .hero-flag b {
+    color: var(--color-yellow);
+    font-weight: 700;
+  }
+
+  /* Only the flame breathes — a pill that moves as a whole would fight the
+     headline for attention. */
+  .flag-ic {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+    color: var(--color-yellow);
+    animation: flameGlow 2.6s ease-in-out infinite;
+  }
+
+  .flag-go {
+    color: var(--color-yellow);
+    opacity: 0.75;
+    transition: transform 0.2s;
+  }
+
+  .hero-flag:hover .flag-go {
+    transform: translateX(2px);
+    opacity: 1;
+  }
+
+  @keyframes flameGlow {
+    0%, 100% { transform: scale(1); filter: none; }
+    50% { transform: scale(1.12); filter: drop-shadow(0 0 6px rgba(249, 199, 79, 0.7)); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .flag-ic { animation: none; }
+  }
+
   .hero h1 {
     font-size: clamp(2.25rem, 6vw, 3.5rem);
     font-weight: 700;
@@ -635,6 +704,11 @@ const { whatsappLink, presentationLink, signupLink } = config;
   .cta-hint {
     font-size: 0.875rem;
     color: var(--color-gray-400);
+  }
+
+  .cta-hint b {
+    color: var(--color-gray-200);
+    font-weight: 600;
   }
 
   /* Time cost, worn by the secondary CTA — the quiz only competes with signup
@@ -1395,6 +1469,9 @@ const { whatsappLink, presentationLink, signupLink } = config;
   .founding-note .fn-ic { flex: 0 0 auto; }
   .founding-note .fn-tx { flex: 1; }
   .founding-note b { color: var(--color-yellow); font-weight: 700; }
+  /* Amber is reserved for the two numbers; the identity word stays white so
+     the note has one accent, not four competing ones. */
+  .founding-note b.w { color: var(--color-white); }
   .cta-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
   .cta-button-large { padding: 1rem 2rem; font-size: 1.05rem; }
   .cta-button-wa { display: inline-flex; align-items: center; justify-content: center; gap: 9px; font-weight: 700; font-size: 1.02rem; border-radius: 14px; padding: 1rem 1.75rem; border: 1.5px solid rgba(255,255,255,.45); color: #fff; transition: background .15s, border-color .15s, transform .12s; }
