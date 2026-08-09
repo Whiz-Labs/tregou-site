@@ -24,8 +24,8 @@ const { whatsappLink, presentationLink, signupLink } = config;
       <div class="hero-content">
         <h1>Entregas mais <span class="gradient-text">rápidas</span> e <span class="gradient-text">inteligentes</span></h1>
         <p class="hero-subtitle">
-          Pra restaurantes, farmácias e qualquer negócio que entrega: distribua seus pedidos
-          do iFood, WhatsApp ou balcão entre os entregadores automaticamente, com rotas otimizadas.
+          Pra restaurantes, farmácias e qualquer negócio que entrega: seus pedidos do iFood,
+          WhatsApp ou balcão vão pro entregador certo sozinhos, na melhor rota.
         </p>
         <div class="hero-cta">
           <div class="hero-buttons">
@@ -35,9 +35,12 @@ const { whatsappLink, presentationLink, signupLink } = config;
                 <path d="M5 12h14M12 5l7 7-7 7"/>
               </svg>
             </a>
+            <a href="/comecar?src=hero" class="cta-button-secondary">
+              Serve pro meu negócio?
+              <span class="cta-badge">30s</span>
+            </a>
           </div>
           <span class="cta-hint">Grátis pra testar. Sem cartão, leva 2 minutos.</span>
-          <a href="/comecar?src=hero" class="cta-link-quiz">Ainda em dúvida? Veja se serve pro seu negócio · 30s</a>
         </div>
       </div>
 
@@ -368,7 +371,6 @@ const { whatsappLink, presentationLink, signupLink } = config;
             Tirar dúvidas no WhatsApp
           </a>
         </div>
-        <a href="/comecar?src=footer" class="cta-link-quiz cta-link-quiz-center">Não sabe se serve pro seu negócio? Descubra em 30s</a>
       </div>
     </div>
   </section>
@@ -544,8 +546,10 @@ const { whatsappLink, presentationLink, signupLink } = config;
   .hero-buttons {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
-    align-items: center;
+    gap: 0.625rem;
+    /* stretch, not center: if they wrap onto separate rows the two buttons keep
+       the same height instead of reading as two unrelated sizes. */
+    align-items: stretch;
   }
 
   .cta-button-secondary {
@@ -553,7 +557,7 @@ const { whatsappLink, presentationLink, signupLink } = config;
     align-items: center;
     gap: 0.5rem;
     color: var(--color-white);
-    padding: 1rem 1.5rem;
+    padding: 1rem 1.25rem;
     border-radius: 0.625rem;
     font-size: 1rem;
     font-weight: 600;
@@ -633,28 +637,36 @@ const { whatsappLink, presentationLink, signupLink } = config;
     color: var(--color-gray-400);
   }
 
-  /* Tertiary path for the not-yet-convinced — deliberately a link, not a button,
-     so it never competes with the signup CTA. */
-  .cta-link-quiz {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--color-gray-400);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    transition: color 0.2s;
+  /* Time cost, worn by the secondary CTA — the quiz only competes with signup
+     if the visitor thinks it's long. */
+  .cta-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 0.15rem 0.45rem;
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.14);
+    color: rgba(255, 255, 255, 0.75);
   }
 
-  .cta-link-quiz:hover {
+  .cta-button-secondary:hover .cta-badge {
+    background: rgba(255, 255, 255, 0.2);
     color: var(--color-white);
-  }
-
-  .cta-link-quiz-center {
-    margin-top: 1.25rem;
   }
 
   @media (max-width: 560px) {
     .nav-hide-sm {
       display: none;
+    }
+
+    /* Stacked buttons of different widths read as ragged — match them. */
+    .hero-buttons {
+      width: 100%;
+    }
+
+    .hero-buttons > a {
+      flex: 1 1 100%;
+      justify-content: center;
     }
   }
 

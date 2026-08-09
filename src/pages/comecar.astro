@@ -14,17 +14,19 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
   description="Responda 5 perguntas rápidas e veja como o Tregou funciona pro seu negócio — distribuição de entregas automática, no prazo e no seu controle."
 >
   <main class="quiz">
-    <div class="card">
-      <div class="bar" aria-hidden="true"><div class="bar-fill" id="bar"></div></div>
+    <div class="card" data-intro="true">
+      <!-- Hidden on the intro, where a 0% bar reads as a stray line. -->
+      <div class="bar" id="bar-wrap" aria-hidden="true"><div class="bar-fill" id="bar"></div></div>
 
       <!-- 0 · INTRO -->
       <section class="step is-active" data-step="0">
         <div class="brand">
-          <img src="/tregou-logo.png" alt="Tregou" height="30" />
+          <img src="/tregou-logo.png" alt="Tregou" height="28" />
         </div>
+        <span class="chip">5 perguntas · 30 segundos</span>
         <h1>Veja como o Tregou funciona <span class="hl">pro seu negócio</span></h1>
-        <p class="lead">Responda 5 perguntas rápidas (leva 30 segundos) e a gente te mostra exatamente onde o Tregou te ajuda.</p>
-        <button class="btn btn-primary" data-next>Começar →</button>
+        <p class="lead">A gente te mostra exatamente onde ele te ajuda — e quanto tempo isso economiza.</p>
+        <button class="btn btn-primary" data-next>Começar <span class="ar">→</span></button>
         <button class="skip" data-goto-result data-ready>Já sei que quero — criar conta grátis</button>
       </section>
 
@@ -129,17 +131,28 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       --ink: #16211b; --muted: #5c6b62; --line: #e3ebe0;
       --bg: #f5f8f3; --surface: #ffffff;
       min-height: 100dvh; display: grid; place-items: safe center;
-      background: radial-gradient(120% 80% at 80% -10%, var(--g-tint), var(--bg));
+      background:
+        radial-gradient(90% 60% at 85% -10%, rgba(43, 147, 72, 0.13), transparent 70%),
+        radial-gradient(70% 50% at 0% 110%, rgba(249, 199, 79, 0.10), transparent 70%),
+        var(--bg);
       padding: clamp(14px, 4vw, 28px); color: var(--ink);
     }
     .card {
-      width: 100%; max-width: 560px; background: var(--surface);
-      border: 1px solid var(--line); border-radius: 22px;
-      padding: clamp(20px, 5vw, 44px); position: relative;
-      box-shadow: 0 30px 70px -34px rgba(20, 60, 35, 0.4);
+      width: 100%; max-width: 512px; background: var(--surface);
+      border: 1px solid var(--line); border-radius: 20px;
+      padding: clamp(22px, 4vw, 36px); position: relative;
+      box-shadow: 0 1px 2px rgba(20, 60, 35, 0.05), 0 24px 60px -30px rgba(20, 60, 35, 0.42);
     }
-    .bar { height: 6px; background: var(--g-tint); border-radius: 100px; overflow: hidden; margin-bottom: 26px; }
+    .bar { height: 5px; background: var(--g-tint); border-radius: 100px; overflow: hidden; margin-bottom: 24px; transition: opacity .3s ease; }
+    /* Intro has no progress to show — a 0% bar just reads as a stray rule. */
+    .card[data-intro="true"] .bar { opacity: 0; }
     .bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--g), var(--g-deep)); border-radius: 100px; transition: width .4s ease; }
+
+    .chip {
+      display: inline-block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.07em;
+      text-transform: uppercase; color: var(--g-deep); background: var(--g-tint);
+      border-radius: 100px; padding: 5px 11px; margin-bottom: 14px;
+    }
 
     .step { display: none; }
     .step.is-active { display: block; animation: fade .35s ease; }
@@ -179,19 +192,25 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     .continue:disabled { opacity: 0.45; pointer-events: none; }
 
     .btn {
-      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-      font: inherit; font-weight: 700; font-size: 1.02rem; cursor: pointer;
-      border-radius: 13px; padding: 15px 26px; text-decoration: none; border: 1.5px solid transparent;
+      display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+      font: inherit; font-weight: 700; font-size: 1rem; cursor: pointer;
+      border-radius: 14px; padding: 15px 26px; text-decoration: none; border: 1.5px solid transparent;
       transition: transform .12s, box-shadow .12s, background .12s;
     }
     .btn:hover { text-decoration: none; transform: translateY(-2px); }
-    .btn-primary { background: var(--g); color: #fff; box-shadow: 0 12px 26px -12px rgba(43, 147, 72, 0.6); margin-top: 26px; }
-    .btn-primary:hover { background: var(--g-deep); }
+    /* Same gradient + lift as the landing's primary — one button language across both. */
+    .btn-primary {
+      background: linear-gradient(135deg, var(--g) 0%, var(--g-deep) 100%); color: #fff;
+      box-shadow: 0 10px 24px -12px rgba(43, 147, 72, 0.65); margin-top: 24px;
+    }
+    .btn-primary:hover { background: linear-gradient(135deg, var(--g-deep) 0%, #166534 100%); box-shadow: 0 14px 30px -12px rgba(43, 147, 72, 0.7); }
+    .btn .ar { transition: transform .18s ease; }
+    .btn:hover .ar { transform: translateX(3px); }
     .btn-outline { background: var(--surface); color: var(--g-deep); border-color: var(--line); }
     .btn-outline:hover { border-color: var(--g); background: var(--g-tint); }
 
-    .skip { display: block; margin: 16px 0 0; padding: 0; text-align: left; background: none; border: none; color: var(--muted); font: inherit; font-size: 0.92rem; text-decoration: underline; cursor: pointer; }
-    .skip:hover { color: var(--g-deep); }
+    .skip { display: block; margin: 18px 0 0; padding: 0; text-align: left; background: none; border: none; color: var(--muted); font: inherit; font-size: 0.9rem; font-weight: 500; text-decoration: none; cursor: pointer; }
+    .skip:hover { color: var(--g-deep); text-decoration: underline; text-underline-offset: 3px; }
 
     .badge { display: inline-block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--g-deep); background: var(--g-tint); border: 1px solid var(--g); border-radius: 100px; padding: 5px 12px; margin-bottom: 12px; }
     .result-intro { color: var(--muted); font-size: 1rem; line-height: 1.5; margin-top: 4px; }
@@ -231,6 +250,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     (function () {
       const steps = Array.from(document.querySelectorAll('.step'));
       const bar = document.getElementById('bar');
+      const card = document.querySelector('.card');
       const back = document.getElementById('back');
       const answers = {};
       const TOTAL_Q = 5; // questions 1..5; last step is the result
@@ -240,6 +260,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
         cur = Math.max(0, Math.min(steps.length - 1, n));
         steps.forEach((s, i) => s.classList.toggle('is-active', i === cur));
         bar.style.width = (cur / (TOTAL_Q + 1)) * 100 + '%';
+        if (card) card.setAttribute('data-intro', String(cur === 0));
         back.hidden = cur === 0 || cur === steps.length - 1;
         if (cur === steps.length - 1) { buildResult(); attributeSignup(); saveResponse(); }
         try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {}
