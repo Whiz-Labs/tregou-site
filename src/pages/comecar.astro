@@ -182,7 +182,10 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     .opt:active { transform: scale(0.985); }
     .opt:focus-visible { outline: 2px solid var(--g); outline-offset: 2px; }
 
-    .multi-hint { font-size: 0.9rem; color: var(--muted); margin-top: 4px; }
+    .multi-hint { font-size: 0.9rem; color: var(--muted); margin-top: 4px; transition: color .18s ease; }
+    .multi-hint.on { color: var(--g-deep); font-weight: 600; animation: hintpop .24s ease; }
+    @keyframes hintpop { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .multi-hint.on { animation: none; } }
     .opt-check::after { content: ""; width: 20px; height: 20px; border: 1.8px solid var(--line); border-radius: 6px; display: grid; place-items: center; font-size: 0.78rem; font-weight: 800; color: #fff; transition: background .15s, border-color .15s; }
     .opt-check:hover::after { transform: none; }
     .opt-check.selected { border-color: var(--g); background: var(--g-tint); box-shadow: 0 6px 18px -8px rgba(43, 147, 72, 0.45); }
@@ -289,12 +292,27 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
         const q = checks[0].dataset.q;
         const set = new Set();
         const contBtn = step.querySelector('[data-continue]');
+        const hint = step.querySelector('.multi-hint');
+        const baseHint = hint ? hint.textContent : '';
+
+        // The "you can pick several" hint is invisible before the first tap —
+        // nobody reads it yet. It earns its keep right after, when the real
+        // question is "am I done, or can I keep going?".
+        function syncHint(n) {
+          if (!hint) return;
+          hint.textContent = n === 0
+            ? baseHint
+            : n + (n === 1 ? ' marcado' : ' marcados') + ' — pode marcar mais, ou continuar.';
+          hint.classList.toggle('on', n > 0);
+        }
+
         checks.forEach((o) =>
           o.addEventListener('click', () => {
             const v = o.dataset.val;
             if (set.has(v)) { set.delete(v); o.classList.remove('selected'); }
             else { set.add(v); o.classList.add('selected'); }
             if (contBtn) contBtn.disabled = set.size === 0;
+            syncHint(set.size);
           })
         );
         if (contBtn)
