@@ -367,6 +367,10 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
         const a = document.getElementById('go-signup');
         if (!a || !a.dataset.base) return;
         const p = new URLSearchParams({ src: 'quiz' });
+        // Same visit and same person on the panel side, so "reached the
+        // result" and "opened the form" are recognised as one.
+        if (window.__tgSid) p.set('sid', window.__tgSid);
+        if (window.__tgVid) p.set('vid', window.__tgVid);
         if (answers.fleet) p.set('fleet', answers.fleet);
         if (answers.size) p.set('size', answers.size);
         if (answers.pain && answers.pain.length)
@@ -395,6 +399,9 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
           source: 'landing-quiz',
           referrer: document.referrer || null,
           user_agent: navigator.userAgent || null,
+          // Same id the pageviews and the signup carry, so a lead can be told
+          // apart from the account it later became.
+          session_id: window.__tgSid || null,
         };
         for (var k in (extra || {})) body[k] = extra[k];
         try {

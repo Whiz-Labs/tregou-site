@@ -68,23 +68,54 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       Cookieless analytics. Logs one pageview per load and every click on an
       element carrying data-ev="<cta-id>", so we can see which CTA people
       actually use — the signup form stores the matching ?src=, which closes
-      the funnel on the panel side. The session id is a random per-tab value in
-      sessionStorage (not a cookie, not persisted), and no IP is stored, so this
-      needs no consent banner. Fire-and-forget: never blocks a navigation.
+      the funnel on the panel side. Signup links also get ?sid= and ?vid=
+      appended, so the panel can log the rest of the funnel into the same
+      visit and person instead of starting a new anonymous one.
+
+      Two random first-party ids in localStorage: tg_vid (the person) and
+      tg_sid (one visit, rolled over after 30 minutes of inactivity). No IP,
+      no third-party cookie, nothing that identifies anyone off this site —
+      but localStorage does persist, so the privacy policy names it.
+      Fire-and-forget: never blocks a navigation.
     -->
     <script is:inline define:vars={{ sbUrl: SUPABASE_URL, sbKey: SUPABASE_ANON_KEY }}>
       (function () {
         if (!sbUrl || !sbKey) return;
 
         var endpoint = sbUrl.replace(/\/$/, '') + '/rest/v1/site_events';
+
+        // Two identities, because they answer different questions. `vid` is
+        // the person and never expires; `sid` is one visit and rolls over
+        // after 30 minutes of silence — the usual definition, and the reason
+        // two tabs no longer read as two people while a visit tomorrow still
+        // reads as a second visit. A returning visitor is one of the strongest
+        // intent signals we have, and the old per-tab id could not see one.
+        var VISIT_GAP_MS = 30 * 60 * 1000;
+        var vid = null;
         var sid = null;
+
+        function newId() {
+          return Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+        }
+
         try {
-          sid = sessionStorage.getItem('tg_sid');
-          if (!sid) {
-            sid = Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
-            sessionStorage.setItem('tg_sid', sid);
+          var store = localStorage;
+          vid = store.getItem('tg_vid');
+          if (!vid) {
+            vid = newId();
+            store.setItem('tg_vid', vid);
           }
-        } catch (e) { /* private mode — the event still counts, just unlinked */ }
+
+          var last = parseInt(store.getItem('tg_seen') || '0', 10);
+          sid = store.getItem('tg_sid');
+          if (!sid || !last || Date.now() - last > VISIT_GAP_MS) sid = newId();
+          store.setItem('tg_sid', sid);
+          store.setItem('tg_seen', String(Date.now()));
+        } catch (e) {
+          // Private mode or storage disabled. The events still count; they
+          // just cannot be tied to anything beyond this page load.
+          sid = sid || newId();
+        }
 
         // Campaign context, if the visit carried any.
         var utm = null;
@@ -101,6 +132,11 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 
         function track(event, name) {
           try {
+            // Every event is activity, so the visit window slides with it —
+            // otherwise a long read followed by a click would be filed as two
+            // visits just because the page loaded 31 minutes earlier.
+            try { localStorage.setItem('tg_seen', String(Date.now())); } catch (e) { /* ignore */ }
+
             return fetch(endpoint, {
               method: 'POST',
               headers: {
@@ -114,6 +150,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
                 name: name ? String(name).slice(0, 48) : null,
                 path: location.pathname.slice(0, 200),
                 session_id: sid,
+                visitor_id: vid,
                 referrer: document.referrer ? document.referrer.slice(0, 500) : null,
                 user_agent: (navigator.userAgent || '').slice(0, 400),
                 utm: utm,
@@ -126,18 +163,55 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 
         track('pageview');
 
+        // The panel is another origin (panel.tregou.app) and every CTA opens it
+        // in a new tab, so neither this sessionStorage nor the tab identity
+        // survives the jump — the click and the form look like two strangers.
+        // Carrying the id in the URL is what lets the signup page log into the
+        // same session, which is the only way to count the people who opened
+        // the form and closed it without registering.
+        function withSid(href) {
+          if (!sid) return null;
+          try {
+            var u = new URL(href, location.href);
+            if (u.pathname.replace(/\/$/, '') !== '/signup') return null;
+            if (u.searchParams.get('sid')) return null;
+            u.searchParams.set('sid', sid);
+            // The person too, not just the visit — that is what lets us see
+            // that someone signed up on their third visit rather than first.
+            if (vid) u.searchParams.set('vid', vid);
+            return u.toString();
+          } catch (e) {
+            return null;
+          }
+        }
+
         // Capture phase so a handler that stops propagation can't hide the click.
         document.addEventListener(
           'click',
           function (e) {
-            var el = e.target && e.target.closest ? e.target.closest('[data-ev]') : null;
+            var t = e.target && e.target.closest ? e.target : null;
+            if (!t) return;
+
+            var el = t.closest('[data-ev]');
             if (el) track('cta_click', el.getAttribute('data-ev'));
+
+            // Stamped at click time rather than on load: the quiz only builds
+            // its signup href once the result appears. The capture phase still
+            // runs before the browser reads href for the navigation.
+            var a = t.closest('a[href]');
+            if (a) {
+              var next = withSid(a.getAttribute('href'));
+              if (next) a.setAttribute('href', next);
+            }
           },
           true
         );
 
-        // Let page scripts log their own milestones (e.g. the quiz result).
+        // Let page scripts log their own milestones (e.g. the quiz result) and
+        // build their own signup links (the quiz appends the answers itself).
         window.__tgTrack = track;
+        window.__tgSid = sid;
+        window.__tgVid = vid;
       })();
     </script>
   </body>
