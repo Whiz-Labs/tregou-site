@@ -82,6 +82,33 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       (function () {
         if (!sbUrl || !sbKey) return;
 
+        // Nothing from a developer machine or from our own browsers may reach
+        // the numbers. `npm run dev` points at the production project, so
+        // every local page load used to land in the real data — five of the
+        // seven quiz answers we ever collected turned out to be exactly that.
+        //
+        // ?internal=1 sets the same block permanently on this browser, for
+        // testing the live site; ?internal=0 lifts it. ?tg_debug=1 forces
+        // logging back on for one page, which is the only way to check the
+        // tracker itself still works.
+        var host = location.hostname;
+        var isLocal = host === 'localhost' || host === '127.0.0.1' || host.endsWith('.local');
+        var internal = false;
+        try {
+          var q = new URLSearchParams(location.search);
+          if (q.get('internal') === '1') localStorage.setItem('tg_internal', '1');
+          if (q.get('internal') === '0') localStorage.removeItem('tg_internal');
+          internal = localStorage.getItem('tg_internal') === '1';
+          if (q.get('tg_debug') === '1') { isLocal = false; internal = false; }
+        } catch (e) { /* storage blocked — treat as a normal visitor */ }
+
+        window.__tgMuted = isLocal || internal;
+        if (window.__tgMuted) {
+          // Page scripts still call these; they must exist and do nothing.
+          window.__tgTrack = function () { return Promise.resolve(); };
+          return;
+        }
+
         var endpoint = sbUrl.replace(/\/$/, '') + '/rest/v1/site_events';
 
         // Two identities, because they answer different questions. `vid` is

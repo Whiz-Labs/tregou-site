@@ -390,6 +390,8 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       function postResponse(extra) {
         const sb = window.__SB || {};
         if (!sb.url || !sb.key) return Promise.resolve(false);
+        // Same mute as the tracker: localhost and our own browsers never write.
+        if (window.__tgMuted) return Promise.resolve(false);
         const body = {
           fleet: answers.fleet || null,
           size: answers.size || null,
@@ -399,9 +401,11 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
           source: 'landing-quiz',
           referrer: document.referrer || null,
           user_agent: navigator.userAgent || null,
-          // Same id the pageviews and the signup carry, so a lead can be told
-          // apart from the account it later became.
+          // The same ids the pageviews and the signup carry: the visit it came
+          // from, and the person, so two answers from one visitor collapse
+          // into one lead instead of two.
           session_id: window.__tgSid || null,
+          visitor_id: window.__tgVid || null,
         };
         for (var k in (extra || {})) body[k] = extra[k];
         try {
@@ -424,6 +428,19 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       function saveResponse() {
         if (saved) return;
         if (!answers.fleet && !answers.pain && !answers.help && !answers.size && !answers.canal) return;
+
+        // `saved` only covers this page load. Reloading the result, or going
+        // back and reaching it again, used to write the answers a second time
+        // — two identical rows six minutes apart is exactly what our own data
+        // looked like. One row per visit; a genuine return next week is a new
+        // visit and does get recorded, and /admin/leads merges the two by
+        // visitor into a single lead.
+        try {
+          var visit = window.__tgSid;
+          if (visit && localStorage.getItem('tg_quiz_sent') === visit) { saved = true; return; }
+          if (visit) localStorage.setItem('tg_quiz_sent', visit);
+        } catch (e) { /* storage blocked — worst case, one extra row */ }
+
         saved = true;
         // Funnel milestone: they answered and reached the result (skippers,
         // who jump straight to it, are excluded by the guard above).
