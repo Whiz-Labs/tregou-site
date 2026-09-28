@@ -39,11 +39,10 @@ const AREAS = [
           <h1>Entregas perto de você. O valor é <span class="hl">todo seu.</span></h1>
           <div class="preview" aria-hidden="true">
             <div class="pv-card">
-              <div class="pv-app"><img src="/brand/tregou-icon-dark-neon.svg" alt="" width="22" height="22" /><img class="pv-word" src="/brand/tregou-wordmark-mono-white.svg" alt="Tregou" height="13" /><span class="pv-when">· agora</span><span class="pv-tag">exemplo</span></div>
+              <div class="pv-app"><img class="pv-word" src="/brand/tregou-wordmark.svg" alt="Tregou" height="24" /><span class="pv-tag">exemplo</span></div>
               <div class="pv-new">Nova entrega</div>
               <div class="pv-price">R$ 12,00</div>
               <div class="pv-meta">Bessa → Manaíra · 2,4 km · 1 entrega</div>
-              <div class="pv-btns"><span class="pv-no">Agora não</span><span class="pv-yes">Aceitar</span></div>
             </div>
           </div>
           <p class="lead">Veja em 30 segundos como funciona pra você.</p>
@@ -247,21 +246,16 @@ const AREAS = [
     .intro .body { flex: 0 0 auto; }
     .intro .actions { padding-top: 22px; }
     .preview { margin-top: 22px; }
-    .pv-card { border-radius: 20px; background: #0f2a1c; color: #fff; padding: 18px; box-shadow: 0 18px 36px -20px rgba(15, 42, 28, 0.75); }
+    .pv-card { transform: rotate(-2deg); pointer-events: none; user-select: none; border-radius: 20px; background: #0f2a1c; color: #fff; padding: 18px; box-shadow: 0 18px 36px -20px rgba(15, 42, 28, 0.75); }
     /* The card is the app's offer, branded as it will arrive: icon, name, "agora". */
-    .pv-app { display: flex; align-items: center; gap: 7px; padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+    .pv-app { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
     .pv-app img { display: block; }
-    .pv-word { height: 13px; width: auto; }
-    .pv-when { font-size: 0.85rem; color: #9fb8a8; font-weight: 600; flex: 1; }
+    .pv-word { height: 24px; width: auto; }
     .pv-new { font-size: 0.82rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: #8fe0ad; }
-    .pv-tag { font-size: 0.72rem; font-weight: 700; color: #9fb8a8; border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 100px; padding: 2px 8px; }
+    .pv-tag { font-size: 0.8rem; font-weight: 600; font-style: italic; color: #8ea597; }
     .pv-price { margin-top: 6px; font-size: 2.3rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; }
     .pv-meta { margin-top: 4px; font-size: 1rem; color: #cfe3d6; font-weight: 600; }
-    .pv-btns { margin-top: 14px; display: grid; grid-template-columns: 1fr 1.6fr; gap: 8px; }
-    .pv-btns span { border-radius: 12px; padding: 11px 0; text-align: center; font-size: 0.98rem; font-weight: 800; }
-    .pv-no { background: rgba(255, 255, 255, 0.1); color: #cfe3d6; }
-    .pv-yes { background: #2fbf6a; color: #06210f; }
-    .intro .lead { margin-top: 18px; }
+    .intro .lead { margin-top: 24px; }
     .intro .cta-note { margin-top: 12px; }
     @media (max-width: 559px) and (max-height: 700px) {
       .intro h1 { font-size: 1.7rem; }
