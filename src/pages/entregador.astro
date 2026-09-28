@@ -134,7 +134,7 @@ const AREAS = [
       <section class="step" data-step="6">
         <div class="body">
           <div class="badge">Feito pra você</div>
-          <h2>A Rede Tregou foi feita pra isso</h2>
+          <h2>Seja entregador parceiro da Rede Tregou</h2>
           <div class="outcomes">
             <div class="oc"><span class="ck">✓</span><span>Você escolhe quais entregas pegar. Sem punição.</span></div>
             <div class="oc"><span class="ck">✓</span><span>O valor da entrega é todo seu.</span></div>
@@ -467,7 +467,7 @@ const AREAS = [
         if (items('hours').length) data.push('🕐 *Horários:* ' + items('hours').join(', '));
         if (items('work').length) data.push('💼 *Trabalho hoje:* ' + items('work').join(', '));
         if (answers.vehicle) data.push('🏍️ *Moto e CNH:* ' + LABEL.vehicle[answers.vehicle]);
-        return ['Oi! Quero entrar na *Rede Tregou* 🛵', data.join('\n'), 'Código: *' + ownCode + '*']
+        return ['Oi! Quero ser entregador parceiro da *Rede Tregou* 🛵', data.join('\n'), 'Código: *' + ownCode + '*']
           .filter(Boolean).join('\n\n');
       }
 
