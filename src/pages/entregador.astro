@@ -4,7 +4,7 @@ import { config } from '../config';
 
 // Courier side of the Rede Tregou (step 0: pre-registration before the network
 // exists in the app). Five taps, then the pre-registration finishes on Tregou's
-// WhatsApp with the answers already typed — a real person has to send it, which
+// WhatsApp with a two-line message carrying their code — a real person has to send it, which
 // is the check that this is a courier and not a bot.
 //
 // Built for a courier's phone first: full screen, the one button always at the
@@ -149,7 +149,7 @@ const AREAS = [
             <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2c0 1.3.9 2.5 1 2.7.1.2 1.8 2.8 4.4 3.9 1.7.7 2.3.8 3.1.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>
             Fazer meu pré-cadastro
           </a>
-          <p class="cta-note">Abre o WhatsApp com suas respostas. É só enviar.</p>
+          <p class="cta-note">Abre o WhatsApp com a mensagem pronta. É só enviar.</p>
         </div>
       </section>
 
@@ -433,42 +433,14 @@ const AREAS = [
       })();
       const myLink = 'tregou.app/entregador?ref=' + ownCode;
 
-      const LABEL = {
-        work: { apps: 'iFood/apps', empresa: 'empresa de motoboy', restaurante: 'direto com restaurante', parado: 'parado agora' },
-        hours: { almoco: 'almoço', tarde: 'tarde', jantar: 'jantar', noite: 'noite', fds: 'fim de semana' },
-        vehicle: { ambos: 'tenho as duas', moto: 'só a moto', cnh: 'só a CNH', nenhum: 'nenhuma das duas' },
-      };
-      // Answers in the order the survey lists them, not the order they were
-      // tapped — "almoço, tarde, jantar", never "almoço, fim de semana, tarde".
-      const ORDER = {};
-      document.querySelectorAll('.opt[data-q]').forEach(function (o) {
-        (ORDER[o.dataset.q] = ORDER[o.dataset.q] || []).push(o.dataset.val);
-      });
-      function items(q) {
-        const raw = answers[q];
-        const v = raw == null ? [] : [].concat(raw);
-        if (!v.length) return [];
-        const map = LABEL[q];
-        const order = ORDER[q] || [];
-        return v.slice()
-          .sort(function (a, b) { return order.indexOf(a) - order.indexOf(b); })
-          .map(function (x) { return map ? (map[x] || x) : x; });
-      }
       function waUrl(text, to) {
         return 'https://wa.me/' + (to === undefined ? (window.__TG_WA || '') : to) + '?text=' + encodeURIComponent(text);
       }
-      // Three blocks with WhatsApp's own bold, so it reads at a glance on
-      // both ends: greeting, the answers, the code. The code is how the admin
-      // finds this courier's row; who brought them and their own link are
-      // already in the row, and the link goes back in our reply.
+      // Just who they are and their code. The answers are already in the row;
+      // a long pre-typed block is something a courier sends without reading,
+      // and our reply repeats back what we noted.
       function waMessage() {
-        const data = [];
-        if (items('areas').length) data.push('📍 *' + (items('areas').length > 1 ? 'Bairros' : 'Bairro') + ':* ' + items('areas').join(', '));
-        if (items('hours').length) data.push('🕐 *Horários:* ' + items('hours').join(', '));
-        if (items('work').length) data.push('💼 *Trabalho hoje:* ' + items('work').join(', '));
-        if (answers.vehicle) data.push('🏍️ *Moto e CNH:* ' + LABEL.vehicle[answers.vehicle]);
-        return ['Oi! Quero ser entregador parceiro da *Rede Tregou* 🛵', data.join('\n'), 'Código: *' + ownCode + '*']
-          .filter(Boolean).join('\n\n');
+        return 'Oi! Quero ser entregador parceiro da *Rede Tregou* 🛵\nCódigo: *' + ownCode + '*';
       }
 
 
