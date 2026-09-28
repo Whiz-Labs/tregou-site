@@ -1,0 +1,426 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { config } from '../config';
+
+// Courier side of the Rede Tregou (step 0: pre-registration before the network
+// exists in the app). Five questions, then the pre-registration finishes on
+// Tregou's WhatsApp with the answers already typed — a real person has to send
+// it, which is the check that this is a courier and not a bot.
+// Answers go to courier_leads (migration 077), insert-only via the anon key.
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+
+// Where the pilot starts. The count of couriers per neighbourhood is what we
+// show restaurants, so this list is the pilot area — edit it with the area.
+const AREAS = [
+  'Manaíra', 'Tambaú', 'Cabo Branco', 'Bessa', 'Miramar', 'Torre',
+  'Estados', 'Centro', 'Bancários', 'Mangabeira', 'Altiplano', 'Cristo',
+];
+---
+
+<BaseLayout
+  title="Rede de entregadores Tregou"
+  description="Entregas de restaurantes perto de você. Você escolhe quais pegar, e o valor da entrega é todo seu."
+>
+  <main class="quiz">
+    <div class="card" data-intro="true">
+      <div class="topbar">
+        <div class="bar" aria-hidden="true"><div class="bar-fill" id="bar"></div></div>
+        <button class="back" id="back" hidden>← Voltar</button>
+      </div>
+
+      <!-- 0 · INTRO -->
+      <section class="step is-active" data-step="0">
+        <div class="brand">
+          <img src="/brand/tregou-wordmark-light.svg" alt="Tregou" height="28" />
+        </div>
+        <span class="chip">5 perguntas · 30 segundos</span>
+        <h1>Entregas perto de você, e o valor é <span class="hl">todo seu</span></h1>
+        <p class="lead">Responda rapidinho e veja como a Rede Tregou funciona pra você.</p>
+        <button class="btn btn-primary" data-ev="courier_quiz_start" data-next>Começar <span class="ar">→</span></button>
+        <a class="skip" id="skip-wa" data-ev="courier_quiz_skip" href="#" target="_blank" rel="noopener noreferrer">Já quero entrar — falar no WhatsApp</a>
+      </section>
+
+      <!-- 1 · how they work today (multi) -->
+      <section class="step" data-step="1">
+        <p class="q-count">Pergunta 1 de 5</p>
+        <h2>Como você trabalha hoje?</h2>
+        <p class="multi-hint">Pode marcar mais de um.</p>
+        <div class="options">
+          <button class="opt opt-check" data-q="work" data-val="apps">iFood / outros apps</button>
+          <button class="opt opt-check" data-q="work" data-val="empresa">Empresa de motoboy</button>
+          <button class="opt opt-check" data-q="work" data-val="restaurante">Direto com restaurante</button>
+          <button class="opt opt-check" data-q="work" data-val="parado">Não estou entregando agora</button>
+        </div>
+        <button class="btn btn-primary continue" data-continue disabled>Continuar</button>
+      </section>
+
+      <!-- 2 · pains (multi) -->
+      <section class="step" data-step="2">
+        <p class="q-count">Pergunta 2 de 5</p>
+        <h2>O que mais te incomoda hoje?</h2>
+        <p class="multi-hint">Pode marcar mais de um.</p>
+        <div class="options">
+          <button class="opt opt-check" data-q="pain" data-val="parte">A empresa fica com parte do valor</button>
+          <button class="opt opt-check" data-q="pain" data-val="taxa">Taxa baixa por entrega</button>
+          <button class="opt opt-check" data-q="pain" data-val="punicao">Punição quando recuso</button>
+          <button class="opt opt-check" data-q="pain" data-val="parado">Muito tempo parado esperando</button>
+          <button class="opt opt-check" data-q="pain" data-val="atraso">Pagamento atrasado</button>
+          <button class="opt opt-check" data-q="pain" data-val="escolha">Não escolho as entregas</button>
+        </div>
+        <button class="btn btn-primary continue" data-continue disabled>Continuar</button>
+      </section>
+
+      <!-- 3 · hours (multi) -->
+      <section class="step" data-step="3">
+        <p class="q-count">Pergunta 3 de 5</p>
+        <h2>Em que horários você fica livre?</h2>
+        <p class="multi-hint">Pode marcar mais de um.</p>
+        <div class="options grid-2">
+          <button class="opt opt-check" data-q="hours" data-val="almoco">Almoço</button>
+          <button class="opt opt-check" data-q="hours" data-val="tarde">Tarde</button>
+          <button class="opt opt-check" data-q="hours" data-val="jantar">Jantar</button>
+          <button class="opt opt-check" data-q="hours" data-val="noite">Noite</button>
+          <button class="opt opt-check" data-q="hours" data-val="fds">Fim de semana</button>
+        </div>
+        <button class="btn btn-primary continue" data-continue disabled>Continuar</button>
+      </section>
+
+      <!-- 4 · neighbourhoods (multi) -->
+      <section class="step" data-step="4">
+        <p class="q-count">Pergunta 4 de 5</p>
+        <h2>Em quais bairros você roda?</h2>
+        <p class="multi-hint">Pode marcar mais de um.</p>
+        <div class="options grid-2">
+          {AREAS.map((a) => (
+            <button class="opt opt-check opt-sm" data-q="areas" data-val={a}>{a}</button>
+          ))}
+          <button class="opt opt-check opt-sm" data-q="areas" data-val="Outro">Outro</button>
+        </div>
+        <button class="btn btn-primary continue" data-continue disabled>Continuar</button>
+      </section>
+
+      <!-- 5 · vehicle (single) -->
+      <section class="step" data-step="5">
+        <p class="q-count">Pergunta 5 de 5</p>
+        <h2>Tem moto própria e CNH categoria A?</h2>
+        <div class="options">
+          <button class="opt" data-q="vehicle" data-val="ambos">As duas</button>
+          <button class="opt" data-q="vehicle" data-val="moto">Só a moto</button>
+          <button class="opt" data-q="vehicle" data-val="cnh">Só a CNH</button>
+          <button class="opt" data-q="vehicle" data-val="nenhum">Nenhuma das duas</button>
+        </div>
+      </section>
+
+      <!-- RESULT -->
+      <section class="step" data-step="6">
+        <div class="badge">Feito pra você</div>
+        <h2>A Rede Tregou foi feita pra isso</h2>
+        <p class="result-intro" id="result-intro"></p>
+        <div class="outcomes">
+          <div class="oc"><span class="ck">✓</span><span>Você escolhe quais entregas pegar. Sem punição.</span></div>
+          <div class="oc"><span class="ck">✓</span><span>O valor da entrega é todo seu.</span></div>
+          <div class="oc"><span class="ck">✓</span><span>O restaurante paga direto no seu Pix, no mesmo dia.</span></div>
+          <div class="oc" data-when="escolha" hidden><span class="ck">✓</span><span>Você vê o valor e a distância antes de aceitar.</span></div>
+          <div class="oc" data-when="parado" hidden><span class="ck">✓</span><span>Ofertas de restaurantes perto de você.</span></div>
+        </div>
+        <p class="note">Começamos pelos bairros onde já temos restaurantes. Você recebe ofertas de restaurantes perto de você.</p>
+        <a class="btn btn-primary btn-block" id="go-wa" href="#" target="_blank" rel="noopener noreferrer">Fazer meu pré-cadastro no WhatsApp</a>
+        <p class="cta-note">Leva 1 minuto. Sem compromisso.</p>
+      </section>
+    </div>
+  </main>
+
+  <style>
+    .quiz {
+      --g: #2b9348; --g-deep: #1b6e36; --g-tint: #e4f1e7; --amber: #f9c74f;
+      --ink: #16211b; --muted: #5c6b62; --line: #e3ebe0;
+      --bg: #f5f8f3; --surface: #ffffff;
+      min-height: 100dvh; display: grid; place-items: safe center;
+      background:
+        radial-gradient(90% 60% at 85% -10%, rgba(43, 147, 72, 0.13), transparent 70%),
+        radial-gradient(70% 50% at 0% 110%, rgba(249, 199, 79, 0.10), transparent 70%),
+        var(--bg);
+      padding: clamp(14px, 4vw, 28px); color: var(--ink);
+    }
+    .card {
+      width: 100%; max-width: 512px; background: var(--surface);
+      border: 1px solid var(--line); border-radius: 20px;
+      padding: clamp(22px, 4vw, 36px); position: relative;
+      box-shadow: 0 1px 2px rgba(20, 60, 35, 0.05), 0 24px 60px -30px rgba(20, 60, 35, 0.42);
+    }
+    .topbar { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; min-height: 22px; }
+    .bar { flex: 1; height: 5px; background: var(--g-tint); border-radius: 100px; overflow: hidden; }
+    .card[data-intro="true"] .topbar { display: none; }
+    .bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--g), var(--g-deep)); border-radius: 100px; transition: width .4s ease; }
+
+    .chip {
+      display: inline-block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.07em;
+      text-transform: uppercase; color: var(--g-deep); background: var(--g-tint);
+      border-radius: 100px; padding: 5px 11px; margin-bottom: 14px;
+    }
+
+    .step { display: none; }
+    .step.is-active { display: block; animation: fade .35s ease; }
+    @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .step.is-active { animation: none; } .bar-fill { transition: none; } }
+
+    .brand { margin-bottom: 20px; }
+    .brand img { height: 32px; width: auto; }
+
+    h1 { font-size: clamp(1.6rem, 4.5vw, 2.3rem); line-height: 1.1; letter-spacing: -0.03em; font-weight: 700; text-wrap: balance; }
+    .hl { color: var(--g); }
+    .lead { color: var(--muted); margin-top: 12px; font-size: 1.02rem; line-height: 1.5; max-width: 34ch; text-wrap: pretty; }
+    h2 { font-size: clamp(1.3rem, 3.6vw, 1.75rem); line-height: 1.15; letter-spacing: -0.02em; font-weight: 700; text-wrap: balance; }
+    .q-count { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--g-deep); margin-bottom: 8px; }
+
+    .options { display: grid; gap: 11px; margin-top: 22px; }
+    .options.grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+    .opt {
+      font: inherit; text-align: left; cursor: pointer; background: var(--surface);
+      border: 1.5px solid var(--line); border-radius: 13px; padding: 16px 18px; width: 100%;
+      font-size: 1.02rem; font-weight: 550; color: var(--ink);
+      transition: border-color .18s ease, background .18s ease, box-shadow .18s ease, transform .12s ease;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .opt-sm { padding: 13px 14px; font-size: 0.96rem; }
+    .opt::after { content: "→"; color: var(--line); font-weight: 700; transition: color .15s, transform .15s; }
+    .opt:hover { border-color: var(--g); background: var(--g-tint); }
+    .opt:hover::after { color: var(--g); transform: translateX(3px); }
+    .opt:active { transform: scale(0.985); }
+    .opt:focus-visible { outline: 2px solid var(--g); outline-offset: 2px; }
+
+    .multi-hint { font-size: 0.9rem; color: var(--muted); margin-top: 4px; transition: color .18s ease; }
+    .multi-hint.on { color: var(--g-deep); font-weight: 600; animation: hintpop .24s ease; }
+    @keyframes hintpop { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .multi-hint.on { animation: none; } }
+    .opt-check::after { content: ""; flex: 0 0 auto; width: 20px; height: 20px; border: 1.8px solid var(--line); border-radius: 6px; display: grid; place-items: center; font-size: 0.78rem; font-weight: 800; color: #fff; transition: background .15s, border-color .15s; }
+    .opt-check:hover::after { transform: none; }
+    .opt-check.selected { border-color: var(--g); background: var(--g-tint); box-shadow: 0 6px 18px -8px rgba(43, 147, 72, 0.45); }
+    .opt-check.selected::after { content: "✓"; background: var(--g); border-color: var(--g); animation: chkpop .22s ease; }
+    @keyframes chkpop { 0% { transform: scale(0.55); } 55% { transform: scale(1.12); } 100% { transform: scale(1); } }
+    @media (prefers-reduced-motion: reduce) { .opt-check.selected::after { animation: none; } }
+    .continue:disabled { opacity: 0.45; pointer-events: none; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+      font: inherit; font-weight: 700; font-size: 1rem; cursor: pointer;
+      border-radius: 14px; padding: 15px 26px; text-decoration: none; border: 1.5px solid transparent;
+      transition: transform .12s, box-shadow .12s, background .12s;
+    }
+    .btn:hover { text-decoration: none; transform: translateY(-2px); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--g) 0%, var(--g-deep) 100%); color: #fff;
+      box-shadow: 0 10px 24px -12px rgba(43, 147, 72, 0.65); margin-top: 24px;
+    }
+    .btn-primary:hover { background: linear-gradient(135deg, var(--g-deep) 0%, #166534 100%); box-shadow: 0 14px 30px -12px rgba(43, 147, 72, 0.7); }
+    .btn .ar { transition: transform .18s ease; }
+    .btn:hover .ar { transform: translateX(3px); }
+
+    .skip { display: block; margin: 18px 0 0; padding: 0; text-align: left; background: none; border: none; color: var(--muted); font: inherit; font-size: 0.9rem; font-weight: 500; text-decoration: none; cursor: pointer; }
+    .skip:hover { color: var(--g-deep); text-decoration: underline; text-underline-offset: 3px; }
+
+    .badge { display: inline-block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--g-deep); background: var(--g-tint); border: 1px solid var(--g); border-radius: 100px; padding: 5px 12px; margin-bottom: 12px; }
+    .result-intro { color: var(--muted); font-size: 1rem; line-height: 1.5; margin-top: 4px; }
+    .result-intro:empty { display: none; }
+    .outcomes { display: grid; gap: 10px; margin: 16px 0 0; text-align: left; }
+    .oc { display: flex; align-items: flex-start; gap: 11px; font-size: 0.98rem; color: var(--ink); font-weight: 600; line-height: 1.4; }
+    .oc[hidden] { display: none; }
+    .oc .ck { flex: 0 0 auto; width: 21px; height: 21px; border-radius: 7px; background: var(--g-tint); color: var(--g-deep); display: grid; place-items: center; font-weight: 800; font-size: 0.72rem; margin-top: 1px; }
+    .note { margin-top: 18px; padding: 3px 0 3px 14px; border-left: 3px solid var(--amber); font-size: 0.9rem; color: var(--muted); line-height: 1.45; }
+    .btn-block { width: 100%; }
+    .cta-note { margin-top: 10px; font-size: 0.88rem; color: var(--muted); text-align: center; }
+
+    .back { flex: 0 0 auto; padding: 0; background: none; border: none; color: var(--muted); font: inherit; font-size: 0.88rem; font-weight: 500; cursor: pointer; }
+    .back:hover { color: var(--g-deep); }
+    .back[hidden] { display: none; }
+  </style>
+
+  <script define:vars={{ sbUrl: SUPABASE_URL, sbKey: SUPABASE_ANON_KEY, waNumber: config.whatsappNumber }}>
+    window.__SB = { url: sbUrl, key: sbKey };
+    window.__TG_WA = waNumber;
+  </script>
+
+  <script>
+    (function () {
+      const steps = Array.from(document.querySelectorAll('.step'));
+      const bar = document.getElementById('bar');
+      const card = document.querySelector('.card');
+      const back = document.getElementById('back');
+      const answers = {};
+      const TOTAL_Q = 5;
+      let cur = 0;
+
+      // Personal referral link: tregou.app/entregador?ref=rafael. Kept to a
+      // plain slug so it reads cleanly in the WhatsApp message.
+      const ref = (function () {
+        try {
+          const raw = new URLSearchParams(location.search).get('ref') || '';
+          const clean = raw.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 40);
+          return clean || null;
+        } catch (e) { return null; }
+      })();
+
+      const LABEL = {
+        work: { apps: 'iFood/apps', empresa: 'empresa de motoboy', restaurante: 'direto com restaurante', parado: 'parado agora' },
+        hours: { almoco: 'almoço', tarde: 'tarde', jantar: 'jantar', noite: 'noite', fds: 'fim de semana' },
+        vehicle: { ambos: 'moto e CNH', moto: 'só moto', cnh: 'só CNH', nenhum: 'sem moto e sem CNH' },
+      };
+      function list(q) {
+        const v = answers[q];
+        if (!v || !v.length) return '';
+        const map = LABEL[q];
+        return v.map(function (x) { return map ? (map[x] || x) : x; }).join(', ');
+      }
+
+      function waUrl(text) {
+        return 'https://wa.me/' + (window.__TG_WA || '') + '?text=' + encodeURIComponent(text);
+      }
+
+      function waMessage() {
+        const parts = ['Oi! Quero entrar na Rede Tregou.'];
+        if (list('work')) parts.push('Trabalho hoje: ' + list('work'));
+        if (list('areas')) parts.push('Bairros: ' + list('areas'));
+        if (list('hours')) parts.push('Horários: ' + list('hours'));
+        if (answers.vehicle) parts.push('Moto/CNH: ' + LABEL.vehicle[answers.vehicle]);
+        if (ref) parts.push('Indicação: ' + ref);
+        return parts.join('\n');
+      }
+
+      // The skip link on the intro still carries the referral.
+      const skip = document.getElementById('skip-wa');
+      if (skip) skip.href = waUrl('Oi! Quero entrar na Rede Tregou.' + (ref ? '\nIndicação: ' + ref : ''));
+
+      function show(n) {
+        cur = Math.max(0, Math.min(steps.length - 1, n));
+        steps.forEach((s, i) => s.classList.toggle('is-active', i === cur));
+        bar.style.width = (cur / (TOTAL_Q + 1)) * 100 + '%';
+        if (card) card.setAttribute('data-intro', String(cur === 0));
+        back.hidden = cur === 0 || cur === steps.length - 1;
+        if (cur === steps.length - 1) { buildResult(); saveResponse(); }
+        try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {}
+      }
+
+      document.querySelectorAll('[data-next]').forEach((b) =>
+        b.addEventListener('click', () => show(cur + 1))
+      );
+      document.querySelectorAll('.opt:not(.opt-check)').forEach((o) =>
+        o.addEventListener('click', () => {
+          answers[o.dataset.q] = o.dataset.val;
+          show(cur + 1);
+        })
+      );
+
+      document.querySelectorAll('.step').forEach((step) => {
+        const checks = step.querySelectorAll('.opt-check');
+        if (!checks.length) return;
+        const q = checks[0].dataset.q;
+        const set = new Set();
+        const contBtn = step.querySelector('[data-continue]');
+        const hint = step.querySelector('.multi-hint');
+        const baseHint = hint ? hint.textContent : '';
+        function syncHint(n) {
+          if (!hint) return;
+          hint.textContent = n === 0
+            ? baseHint
+            : n + (n === 1 ? ' marcado' : ' marcados') + ' — pode marcar mais, ou continuar.';
+          hint.classList.toggle('on', n > 0);
+        }
+        checks.forEach((o) =>
+          o.addEventListener('click', () => {
+            const v = o.dataset.val;
+            if (set.has(v)) { set.delete(v); o.classList.remove('selected'); }
+            else { set.add(v); o.classList.add('selected'); }
+            if (contBtn) contBtn.disabled = set.size === 0;
+            syncHint(set.size);
+          })
+        );
+        if (contBtn)
+          contBtn.addEventListener('click', () => {
+            answers[q] = Array.from(set);
+            show(cur + 1);
+          });
+      });
+
+      back.addEventListener('click', () => show(cur - 1));
+
+      function buildResult() {
+        const pains = answers.pain || [];
+        document.querySelectorAll('.oc[data-when]').forEach(function (el) {
+          el.hidden = pains.indexOf(el.getAttribute('data-when')) < 0;
+        });
+        // "Bancários e Mangabeira · almoço e jantar" — a list read aloud, not a CSV.
+        function joinPt(q) {
+          const s = list(q).split(', ').filter(Boolean);
+          return s.length < 2 ? s.join('') : s.slice(0, -1).join(', ') + ' e ' + s[s.length - 1];
+        }
+        const bits = [];
+        if (joinPt('areas')) bits.push('Pra quem roda em ' + joinPt('areas'));
+        if (joinPt('hours')) bits.push(joinPt('hours'));
+        const intro = document.getElementById('result-intro');
+        if (intro) intro.textContent = bits.length ? bits.join(' · ') + '.' : '';
+        const go = document.getElementById('go-wa');
+        if (go) go.href = waUrl(waMessage());
+      }
+
+      function postResponse(extra) {
+        const sb = window.__SB || {};
+        if (!sb.url || !sb.key) return Promise.resolve(false);
+        if (window.__tgMuted) return Promise.resolve(false);
+        const body = {
+          work: answers.work || null,
+          pains: answers.pain || null,
+          hours: answers.hours || null,
+          areas: answers.areas || null,
+          vehicle: answers.vehicle || null,
+          ref: ref,
+          source: 'courier-quiz',
+          referrer: document.referrer || null,
+          user_agent: navigator.userAgent || null,
+          session_id: window.__tgSid || null,
+          visitor_id: window.__tgVid || null,
+        };
+        for (var k in (extra || {})) body[k] = extra[k];
+        try {
+          return fetch(sb.url.replace(/\/$/, '') + '/rest/v1/courier_leads', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              apikey: sb.key,
+              Authorization: 'Bearer ' + sb.key,
+              Prefer: 'return=minimal',
+            },
+            body: JSON.stringify(body),
+            keepalive: true,
+          }).then(function (r) { return r.ok; }).catch(function () { return false; });
+        } catch (e) { return Promise.resolve(false); }
+      }
+
+      // One row per visit when the result shows; a second row, flagged, when
+      // the courier opens WhatsApp — "answered" and "went to pre-register" are
+      // counted apart.
+      let saved = false;
+      function saveResponse() {
+        if (saved) return;
+        try {
+          var visit = window.__tgSid;
+          if (visit && localStorage.getItem('tg_courier_quiz_sent') === visit) { saved = true; return; }
+          if (visit) localStorage.setItem('tg_courier_quiz_sent', visit);
+        } catch (e) { /* storage blocked — worst case, one extra row */ }
+        saved = true;
+        if (window.__tgTrack) window.__tgTrack('milestone', 'courier_quiz_complete');
+        postResponse();
+      }
+
+      let waSent = false;
+      const go = document.getElementById('go-wa');
+      if (go)
+        go.addEventListener('click', function () {
+          if (waSent) return;
+          waSent = true;
+          if (window.__tgTrack) window.__tgTrack('cta_click', 'courier_whatsapp');
+          postResponse({ whatsapp_opened: true, source: 'courier-quiz-whatsapp' });
+        });
+    })();
+  </script>
+</BaseLayout>
