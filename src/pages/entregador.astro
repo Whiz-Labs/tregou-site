@@ -401,14 +401,21 @@ const AREAS = [
       const RESULT = 6;
       let cur = 0;
 
-      // Personal referral link: tregou.app/entregador?ref=k7p2m. Kept to a
-      // plain slug so it reads cleanly in the WhatsApp message.
+      // Who brought this courier: the slug in their link
+      // (tregou.app/entregador?ref=k7p2m). Kept on the first visit, so coming
+      // back later by the plain address still credits whoever sent the link.
       const ref = (function () {
+        let clean = null;
         try {
           const raw = new URLSearchParams(location.search).get('ref') || '';
-          const clean = raw.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 40);
-          return clean || null;
-        } catch (e) { return null; }
+          clean = raw.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 40) || null;
+        } catch (e) {}
+        try {
+          const kept = localStorage.getItem('tg_courier_ref');
+          if (kept) return kept;
+          if (clean) localStorage.setItem('tg_courier_ref', clean);
+        } catch (e) {}
+        return clean;
       })();
 
       // This courier's own code, to bring others. No look-alike characters, so
@@ -451,17 +458,16 @@ const AREAS = [
         return 'https://wa.me/' + (to === undefined ? (window.__TG_WA || '') : to) + '?text=' + encodeURIComponent(text);
       }
       // Three blocks with WhatsApp's own bold, so it reads at a glance on
-      // both ends: greeting, the answers, the codes.
+      // both ends: greeting, the answers, the code. The code is how the admin
+      // finds this courier's row; who brought them and their own link are
+      // already in the row, and the link goes back in our reply.
       function waMessage() {
         const data = [];
         if (items('areas').length) data.push('📍 *' + (items('areas').length > 1 ? 'Bairros' : 'Bairro') + ':* ' + items('areas').join(', '));
         if (items('hours').length) data.push('🕐 *Horários:* ' + items('hours').join(', '));
         if (items('work').length) data.push('💼 *Trabalho hoje:* ' + items('work').join(', '));
         if (answers.vehicle) data.push('🏍️ *Moto e CNH:* ' + LABEL.vehicle[answers.vehicle]);
-        const codes = [];
-        if (ref) codes.push('Indicado por: *' + ref + '*');
-        codes.push('Meu link pra indicar: ' + myLink);
-        return ['Oi! Quero entrar na *Rede Tregou* 🛵', data.join('\n'), codes.join('\n')]
+        return ['Oi! Quero entrar na *Rede Tregou* 🛵', data.join('\n'), 'Código: *' + ownCode + '*']
           .filter(Boolean).join('\n\n');
       }
 
@@ -580,7 +586,7 @@ const AREAS = [
           hours: answers.hours || null,
           areas: answers.areas ? [].concat(answers.areas) : null,
           vehicle: answers.vehicle || null,
-          ref: ref,
+          ref: ref === ownCode ? null : ref, // opening your own link isn't bringing someone
           own_code: ownCode,
           source: 'courier-quiz',
           referrer: document.referrer || null,
