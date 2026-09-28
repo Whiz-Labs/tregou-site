@@ -101,12 +101,12 @@ const AREAS = [
         <div class="actions"><button class="more-hint" type="button" hidden>Mais opções ↓</button><button class="btn btn-primary continue" data-continue disabled>Continuar</button></div>
       </section>
 
-      <!-- 4 · the neighbourhoods they ride most (up to 3; the third moves on) -->
+      <!-- 4 · the neighbourhoods they ride most (up to 5; Continuar any time, the fifth moves on) -->
       <section class="step" data-step="4">
         <div class="body">
           <h2>Onde você mais roda?</h2>
-          <p class="multi-hint">Até 3 bairros.</p>
-          <div class="options grid-2" data-max="3">
+          <p class="multi-hint">Até 5 bairros.</p>
+          <div class="options grid-2" data-max="5">
             {AREAS.map((a) => (
               <button class="opt opt-check opt-sm" data-q="areas" data-val={a}>{a}</button>
             ))}
