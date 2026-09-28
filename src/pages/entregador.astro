@@ -36,13 +36,11 @@ const AREAS = [
       <!-- 0 · INTRO -->
       <section class="step is-active intro" data-step="0">
         <div class="body">
-          <div class="brand">
-            <img src="/brand/tregou-wordmark-light.svg" alt="Tregou" height="30" />
-          </div>
           <h1>Entregas perto de você. O valor é <span class="hl">todo seu.</span></h1>
           <div class="preview" aria-hidden="true">
             <div class="pv-card">
-              <div class="pv-top"><span class="pv-new">Nova entrega</span><span class="pv-tag">exemplo</span></div>
+              <div class="pv-app"><img src="/brand/tregou-icon-dark-neon.svg" alt="" width="22" height="22" /><img class="pv-word" src="/brand/tregou-wordmark-mono-white.svg" alt="Tregou" height="13" /><span class="pv-when">· agora</span><span class="pv-tag">exemplo</span></div>
+              <div class="pv-new">Nova entrega</div>
               <div class="pv-price">R$ 12,00</div>
               <div class="pv-meta">Bessa → Manaíra · 2,4 km · 1 entrega</div>
               <div class="pv-btns"><span class="pv-no">Agora não</span><span class="pv-yes">Aceitar</span></div>
@@ -143,9 +141,9 @@ const AREAS = [
             <div class="oc"><span class="ck">✓</span><span>O valor da entrega é todo seu.</span></div>
             <div class="oc"><span class="ck">✓</span><span>O restaurante paga direto no seu Pix, no mesmo dia.</span></div>
             <div class="oc" data-when="escolha" hidden><span class="ck">✓</span><span>Você vê o valor e a distância antes de aceitar.</span></div>
-            <div class="oc" data-when="parado" hidden><span class="ck">✓</span><span>Ofertas de restaurantes perto de você.</span></div>
+            <div class="oc" data-when="parado" hidden><span class="ck">✓</span><span>Você vê no mapa onde tem movimento.</span></div>
           </div>
-          <p class="note">Começamos pelos bairros onde já temos restaurantes.</p>
+          <p class="note">Quem entra agora vira <b>Fundador</b>: 2 semanas vendo as ofertas antes quando a Rede abrir.</p>
         </div>
         <div class="actions">
           <a class="btn btn-primary btn-wa" id="go-wa" href="#" target="_blank" rel="noopener noreferrer">
@@ -166,7 +164,7 @@ const AREAS = [
 
           <div class="invite">
             <h3>Chame outros entregadores</h3>
-            <p>Mais entregadores no seu bairro trazem mais restaurantes pra lá. Mande seu link:</p>
+            <p>Cada entregador que você trouxer = <b>+1 semana</b> vendo as ofertas antes. Vale quando ele fizer as 3 primeiras entregas.</p>
             <div class="link-box">
               <span>Seu código: <b id="my-code"></b></span>
               <button class="copy" id="copy-link" type="button">Copiar</button>
@@ -250,7 +248,11 @@ const AREAS = [
     .intro .actions { padding-top: 22px; }
     .preview { margin-top: 22px; }
     .pv-card { border-radius: 20px; background: #0f2a1c; color: #fff; padding: 18px; box-shadow: 0 18px 36px -20px rgba(15, 42, 28, 0.75); }
-    .pv-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    /* The card is the app's offer, branded as it will arrive: icon, name, "agora". */
+    .pv-app { display: flex; align-items: center; gap: 7px; padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+    .pv-app img { display: block; }
+    .pv-word { height: 13px; width: auto; }
+    .pv-when { font-size: 0.85rem; color: #9fb8a8; font-weight: 600; flex: 1; }
     .pv-new { font-size: 0.82rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: #8fe0ad; }
     .pv-tag { font-size: 0.72rem; font-weight: 700; color: #9fb8a8; border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 100px; padding: 2px 8px; }
     .pv-price { margin-top: 6px; font-size: 2.3rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; }
@@ -262,7 +264,6 @@ const AREAS = [
     .intro .lead { margin-top: 18px; }
     .intro .cta-note { margin-top: 12px; }
     @media (max-width: 559px) and (max-height: 700px) {
-      .brand { margin: 0 0 14px; }
       .intro h1 { font-size: 1.7rem; }
       .preview { margin-top: 16px; }
       .pv-card { padding: 14px 16px; }
@@ -324,6 +325,7 @@ const AREAS = [
     .oc { display: flex; align-items: flex-start; gap: 12px; font-size: 1.05rem; color: var(--ink); font-weight: 700; line-height: 1.4; }
     .oc[hidden] { display: none; }
     .ck { flex: 0 0 auto; width: 24px; height: 24px; border-radius: 8px; background: var(--g-tint); color: var(--g-deep); display: grid; place-items: center; font-weight: 900; font-size: 0.8rem; margin-top: 1px; }
+    .note b, .invite b { color: var(--ink); font-weight: 800; white-space: nowrap; }
     .note { margin-top: 20px; padding: 4px 0 4px 14px; border-left: 3px solid var(--amber); font-size: 0.98rem; color: var(--muted); line-height: 1.45; }
     .cta-note { margin-top: 10px; font-size: 0.92rem; color: var(--muted); text-align: center; }
 
@@ -381,13 +383,22 @@ const AREAS = [
       const LABEL = {
         work: { apps: 'iFood/apps', empresa: 'empresa de motoboy', restaurante: 'direto com restaurante', parado: 'parado agora' },
         hours: { almoco: 'almoço', tarde: 'tarde', jantar: 'jantar', noite: 'noite', fds: 'fim de semana' },
-        vehicle: { ambos: 'moto e CNH', moto: 'só moto', cnh: 'só CNH', nenhum: 'sem moto e sem CNH' },
+        vehicle: { ambos: 'tenho as duas', moto: 'só a moto', cnh: 'só a CNH', nenhum: 'nenhuma das duas' },
       };
+      // Answers in the order the survey lists them, not the order they were
+      // tapped — "almoço, tarde, jantar", never "almoço, fim de semana, tarde".
+      const ORDER = {};
+      document.querySelectorAll('.opt[data-q]').forEach(function (o) {
+        (ORDER[o.dataset.q] = ORDER[o.dataset.q] || []).push(o.dataset.val);
+      });
       function items(q) {
         const v = answers[q];
         if (!v || !v.length) return [];
         const map = LABEL[q];
-        return v.map(function (x) { return map ? (map[x] || x) : x; });
+        const order = ORDER[q] || [];
+        return v.slice()
+          .sort(function (a, b) { return order.indexOf(a) - order.indexOf(b); })
+          .map(function (x) { return map ? (map[x] || x) : x; });
       }
       // "Bancários e Mangabeira" — a list read aloud, not a CSV.
       function joinPt(arr) {
@@ -396,15 +407,19 @@ const AREAS = [
       function waUrl(text, to) {
         return 'https://wa.me/' + (to === undefined ? (window.__TG_WA || '') : to) + '?text=' + encodeURIComponent(text);
       }
+      // Three blocks with WhatsApp's own bold, so it reads at a glance on
+      // both ends: greeting, the answers, the codes.
       function waMessage() {
-        const parts = ['Oi! Quero entrar na Rede Tregou.'];
-        if (items('work').length) parts.push('Trabalho hoje: ' + items('work').join(', '));
-        if (items('areas').length) parts.push('Bairros: ' + items('areas').join(', '));
-        if (items('hours').length) parts.push('Horários: ' + items('hours').join(', '));
-        if (answers.vehicle) parts.push('Moto/CNH: ' + LABEL.vehicle[answers.vehicle]);
-        if (ref) parts.push('Indicação: ' + ref);
-        parts.push('Meu código: ' + ownCode);
-        return parts.join('\n');
+        const data = [];
+        if (items('areas').length) data.push('📍 *Bairros:* ' + items('areas').join(', '));
+        if (items('hours').length) data.push('🕐 *Horários:* ' + items('hours').join(', '));
+        if (items('work').length) data.push('💼 *Trabalho hoje:* ' + items('work').join(', '));
+        if (answers.vehicle) data.push('🏍️ *Moto e CNH:* ' + LABEL.vehicle[answers.vehicle]);
+        const codes = [];
+        if (ref) codes.push('Indicado por: *' + ref + '*');
+        codes.push('Meu link pra indicar: ' + myLink);
+        return ['Oi! Quero entrar na *Rede Tregou* 🛵', data.join('\n'), codes.join('\n')]
+          .filter(Boolean).join('\n\n');
       }
 
 
