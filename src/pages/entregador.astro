@@ -65,7 +65,7 @@ const AREAS = [
             <button class="opt opt-check" data-q="work" data-val="parado">Não estou entregando agora</button>
           </div>
         </div>
-        <div class="actions"><button class="btn btn-primary continue" data-continue disabled>Continuar</button></div>
+        <div class="actions"><button class="more-hint" type="button" hidden>Mais opções ↓</button><button class="btn btn-primary continue" data-continue disabled>Continuar</button></div>
       </section>
 
       <!-- 2 · pains (multi) -->
@@ -82,7 +82,7 @@ const AREAS = [
             <button class="opt opt-check" data-q="pain" data-val="escolha">Não escolho as entregas</button>
           </div>
         </div>
-        <div class="actions"><button class="btn btn-primary continue" data-continue disabled>Continuar</button></div>
+        <div class="actions"><button class="more-hint" type="button" hidden>Mais opções ↓</button><button class="btn btn-primary continue" data-continue disabled>Continuar</button></div>
       </section>
 
       <!-- 3 · hours (multi) -->
@@ -98,7 +98,7 @@ const AREAS = [
             <button class="opt opt-check" data-q="hours" data-val="fds">Fim de semana</button>
           </div>
         </div>
-        <div class="actions"><button class="btn btn-primary continue" data-continue disabled>Continuar</button></div>
+        <div class="actions"><button class="more-hint" type="button" hidden>Mais opções ↓</button><button class="btn btn-primary continue" data-continue disabled>Continuar</button></div>
       </section>
 
       <!-- 4 · the neighbourhood they ride most (single, auto-advance) -->
@@ -112,6 +112,7 @@ const AREAS = [
             <button class="opt opt-sm" data-q="areas" data-val="Outro">Outro</button>
           </div>
         </div>
+        <div class="actions actions-hint"><button class="more-hint" type="button" hidden>Mais opções ↓</button></div>
       </section>
 
       <!-- 5 · vehicle (single, auto-advance) -->
@@ -125,6 +126,7 @@ const AREAS = [
             <button class="opt" data-q="vehicle" data-val="nenhum">Nenhuma das duas</button>
           </div>
         </div>
+        <div class="actions actions-hint"><button class="more-hint" type="button" hidden>Mais opções ↓</button></div>
       </section>
 
       <!-- 6 · RESULT -->
@@ -218,7 +220,7 @@ const AREAS = [
     @media (prefers-reduced-motion: reduce) { .step.is-active { animation: none; } .bar-fill { transition: none; } }
     /* min-width 0 all the way down: without it a long unbreakable line (the
        share link) widens the column past the screen. */
-    .step, .body { min-width: 0; }
+    .step, .body { min-width: 0; min-height: 0; }
     .body { flex: 1; }
 
     .brand { margin: 8px 0 22px; }
@@ -295,6 +297,23 @@ const AREAS = [
       .note { font-size: 0.85rem; line-height: 1.35; }
       .step[data-step="6"] .cta-note { display: none; }
     }
+    /* More options below the fold: the bar is solid (options slide behind it,
+       never under text), gains a top shadow, and says so on its own row. */
+    .actions.more { box-shadow: 0 -10px 18px -12px rgba(17, 26, 21, 0.35); }
+    .more-hint { display: block; width: 100%; margin: 0 0 10px; padding: 6px 0; border: 0; background: none; font: inherit; font-size: 0.92rem; font-weight: 800; color: var(--g-deep); cursor: pointer; }
+    .more-hint[hidden] { display: none; }
+    .actions-hint { padding-top: 0; }
+    .actions-hint .more-hint { margin: 0; }
+    .actions-hint:not(.more) { padding-block: 0; }
+    /* Short phones: lower option boxes so six options fit where they can. */
+    @media (max-width: 559px) and (max-height: 760px) {
+      .options { gap: 8px; margin-top: 14px; }
+      .opt { min-height: 50px; padding: 11px 14px; font-size: 1rem; }
+      .opt-sm { min-height: 46px; padding: 10px 12px; }
+      .topbar { margin-bottom: 12px; }
+      .step:not(.intro) h2 { font-size: 1.35rem; }
+      .multi-hint { margin-top: 4px; font-size: 0.9rem; }
+    }
     .trust { list-style: none; margin-top: 22px; display: grid; gap: 10px; padding: 0; }
     .trust li { display: flex; align-items: center; gap: 10px; font-size: 1.02rem; font-weight: 650; color: var(--ink); }
     .tk { width: 24px; height: 24px; border-radius: 8px; background: var(--g-tint); color: var(--g-deep); display: grid; place-items: center; font-size: 0.8rem; font-weight: 900; }
@@ -326,8 +345,8 @@ const AREAS = [
     .actions { padding-top: 20px; }
     @media (max-width: 559px) {
       .actions {
-        position: sticky; bottom: 0; margin: 0 -20px; padding: 18px 20px calc(16px + env(safe-area-inset-bottom));
-        background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #fff 26%);
+        position: sticky; bottom: 0; margin: 0 -20px; padding: 12px 20px calc(16px + env(safe-area-inset-bottom));
+        background: var(--surface); transition: box-shadow .2s ease;
       }
     }
     .btn {
@@ -453,7 +472,26 @@ const AREAS = [
         back.hidden = cur === 0 || cur >= RESULT;
         if (cur === RESULT) { buildResult(); saveResponse(); }
         try { window.scrollTo({ top: 0 }); } catch (e) {}
+        syncMore();
       }
+
+      // "Mais opções ↓" only while the active question has options below the fold.
+      function syncMore() {
+        const step = steps[cur];
+        const bar = step && step.querySelector('.actions');
+        const hint = bar && bar.querySelector('.more-hint');
+        if (!hint) return;
+        const below = document.documentElement.scrollHeight - (window.scrollY + window.innerHeight) > 12;
+        hint.hidden = !below;
+        bar.classList.toggle('more', below);
+      }
+      window.addEventListener('scroll', syncMore, { passive: true });
+      window.addEventListener('resize', syncMore);
+      document.querySelectorAll('.more-hint').forEach(function (h) {
+        h.addEventListener('click', function () {
+          try { window.scrollBy({ top: window.innerHeight * 0.6, behavior: 'smooth' }); } catch (e) { window.scrollBy(0, window.innerHeight * 0.6); }
+        });
+      });
 
       document.querySelectorAll('[data-next]').forEach((b) =>
         b.addEventListener('click', () => show(cur + 1))
