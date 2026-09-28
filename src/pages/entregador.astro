@@ -38,6 +38,8 @@ const AREAS = [
         <div class="body">
           <h1>Entregas perto de você. O valor é <span class="hl">todo seu.</span></h1>
           <div class="preview" aria-hidden="true">
+            <div class="pv-layer pv-back"></div>
+            <div class="pv-layer pv-mid"></div>
             <div class="pv-card">
               <div class="pv-app"><img class="pv-word" src="/brand/tregou-wordmark.svg" alt="Tregou" height="24" /><span class="pv-tag">exemplo</span></div>
               <div class="pv-new">Nova entrega</div>
@@ -245,8 +247,20 @@ const AREAS = [
     .intro { justify-content: center; }
     .intro .body { flex: 0 0 auto; }
     .intro .actions { padding-top: 22px; }
-    .preview { margin-top: 22px; }
-    .pv-card { transform: rotate(-2deg); pointer-events: none; user-select: none; border-radius: 20px; background: #0f2a1c; color: #fff; padding: 18px; box-shadow: 0 18px 36px -20px rgba(15, 42, 28, 0.75); }
+    /* Depth: the app sits behind (a map-lined screen, then a lighter sheet),
+       and the offer comes forward out of it, tipped toward the viewer. */
+    .preview { position: relative; margin-top: 22px; padding-top: 22px; perspective: 1100px; }
+    .pv-layer { position: absolute; border-radius: 22px; pointer-events: none; }
+    .pv-back {
+      top: 0; left: 26px; right: 26px; bottom: 30px; transform: rotate(3.5deg);
+      background:
+        repeating-linear-gradient(28deg, transparent 0 26px, rgba(255, 255, 255, 0.07) 26px 30px),
+        repeating-linear-gradient(-62deg, transparent 0 40px, rgba(255, 255, 255, 0.05) 40px 43px),
+        #1c4a33;
+      box-shadow: 0 10px 24px -14px rgba(15, 42, 28, 0.6);
+    }
+    .pv-mid { top: 10px; left: 12px; right: 12px; bottom: 16px; transform: rotate(1.2deg); background: #2a6446; box-shadow: 0 12px 26px -16px rgba(15, 42, 28, 0.7); }
+    .pv-card { position: relative; transform: rotateX(9deg) rotateY(-7deg) rotate(-2deg); transform-origin: 50% 100%; pointer-events: none; user-select: none; border-radius: 20px; background: #0f2a1c; color: #fff; padding: 18px; box-shadow: 0 28px 44px -18px rgba(15, 42, 28, 0.8), 0 2px 0 rgba(255, 255, 255, 0.06) inset; }
     /* The card is the app's offer, branded as it will arrive: icon, name, "agora". */
     .pv-app { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
     .pv-app img { display: block; }
@@ -259,10 +273,23 @@ const AREAS = [
     .intro .cta-note { margin-top: 12px; }
     @media (max-width: 559px) and (max-height: 700px) {
       .intro h1 { font-size: 1.7rem; }
-      .preview { margin-top: 16px; }
+      .preview { margin-top: 14px; padding-top: 18px; }
       .pv-card { padding: 14px 16px; }
       .pv-price { font-size: 1.9rem; }
       .intro .lead { margin-top: 12px; }
+    }
+    /* The smallest phones (an old SE with Safari's bars, ~460 px tall): the
+       depth layers go, everything tightens — the button must stay on screen. */
+    @media (max-width: 559px) and (max-height: 540px) {
+      .pv-layer { display: none; }
+      .preview { padding-top: 0; margin-top: 12px; }
+      .intro h1 { font-size: 1.45rem; }
+      .pv-card { padding: 12px 14px; }
+      .pv-app { padding-bottom: 8px; margin-bottom: 8px; }
+      .pv-word { height: 20px; }
+      .pv-price { font-size: 1.6rem; }
+      .intro .lead { margin-top: 14px; font-size: 0.98rem; }
+      .intro .actions { padding-top: 12px; }
     }
     .trust { list-style: none; margin-top: 22px; display: grid; gap: 10px; padding: 0; }
     .trust li { display: flex; align-items: center; gap: 10px; font-size: 1.02rem; font-weight: 650; color: var(--ink); }
