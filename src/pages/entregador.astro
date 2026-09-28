@@ -39,26 +39,20 @@ const AREAS = [
           <div class="brand">
             <img src="/brand/tregou-wordmark-light.svg" alt="Tregou" height="30" />
           </div>
-          <span class="chip">Rede de entregadores · João Pessoa</span>
-          <h1>Entregas perto de você, e o valor é <span class="hl">todo seu</span></h1>
-          <p class="lead">Restaurantes do seu bairro chamam. Você vê o valor antes e escolhe quais pegar.</p>
+          <h1>Entregas perto de você. O valor é <span class="hl">todo seu.</span></h1>
           <div class="preview" aria-hidden="true">
-            <span class="pv-label">Exemplo de oferta</span>
             <div class="pv-card">
-              <div class="pv-top"><span class="pv-new">Nova entrega</span><span class="pv-price">R$ 12,00</span></div>
+              <div class="pv-top"><span class="pv-new">Nova entrega</span><span class="pv-tag">exemplo</span></div>
+              <div class="pv-price">R$ 12,00</div>
               <div class="pv-meta">Bessa → Manaíra · 2,4 km · 1 entrega</div>
               <div class="pv-btns"><span class="pv-no">Agora não</span><span class="pv-yes">Aceitar</span></div>
             </div>
           </div>
-          <ul class="trust">
-            <li><span class="tk">✓</span>Sem documentos agora</li>
-            <li><span class="tk">✓</span>5 toques, 30 segundos</li>
-            <li><span class="tk">✓</span>Sem compromisso</li>
-          </ul>
+          <p class="lead">Veja em 30 segundos como funciona pra você.</p>
         </div>
         <div class="actions">
           <button class="btn btn-primary" data-ev="courier_quiz_start" data-next>Começar <span class="ar">→</span></button>
-          <a class="skip" id="skip-wa" data-ev="courier_quiz_skip" href="#" target="_blank" rel="noopener noreferrer">Já quero entrar — falar no WhatsApp</a>
+          <p class="cta-note">Sem documentos · sem compromisso</p>
         </div>
       </section>
 
@@ -249,25 +243,31 @@ const AREAS = [
     /* Intro: the content sits in the middle of whatever height the phone has,
        and the example offer is the part that gives way on a short screen —
        no scroll on a 360×640 Android, no empty half on a tall iPhone. */
-    .intro .body { display: flex; flex-direction: column; justify-content: center; }
-    .preview { margin-top: 20px; }
-    .pv-label { display: block; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: #6b776f; margin-bottom: 8px; }
-    .pv-card { border-radius: 16px; background: #0f2a1c; color: #fff; padding: 14px 16px; box-shadow: 0 14px 30px -18px rgba(15, 42, 28, 0.7); }
-    .pv-top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
-    .pv-new { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: #8fe0ad; }
-    .pv-price { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; }
-    .pv-meta { margin-top: 4px; font-size: 0.95rem; color: #cfe3d6; font-weight: 600; }
-    .pv-btns { margin-top: 12px; display: grid; grid-template-columns: 1fr 1.6fr; gap: 8px; }
-    .pv-btns span { border-radius: 10px; padding: 9px 0; text-align: center; font-size: 0.92rem; font-weight: 800; }
+    /* Headline, card and button read as one block, centred on the screen —
+       a tall phone gets even margins, not a hole above the button. */
+    .intro { justify-content: center; }
+    .intro .body { flex: 0 0 auto; }
+    .intro .actions { padding-top: 22px; }
+    .preview { margin-top: 22px; }
+    .pv-card { border-radius: 20px; background: #0f2a1c; color: #fff; padding: 18px; box-shadow: 0 18px 36px -20px rgba(15, 42, 28, 0.75); }
+    .pv-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .pv-new { font-size: 0.82rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: #8fe0ad; }
+    .pv-tag { font-size: 0.72rem; font-weight: 700; color: #9fb8a8; border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 100px; padding: 2px 8px; }
+    .pv-price { margin-top: 6px; font-size: 2.3rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; }
+    .pv-meta { margin-top: 4px; font-size: 1rem; color: #cfe3d6; font-weight: 600; }
+    .pv-btns { margin-top: 14px; display: grid; grid-template-columns: 1fr 1.6fr; gap: 8px; }
+    .pv-btns span { border-radius: 12px; padding: 11px 0; text-align: center; font-size: 0.98rem; font-weight: 800; }
     .pv-no { background: rgba(255, 255, 255, 0.1); color: #cfe3d6; }
     .pv-yes { background: #2fbf6a; color: #06210f; }
-    @media (max-width: 559px) and (max-height: 720px) {
-      .preview { display: none; }
+    .intro .lead { margin-top: 18px; }
+    .intro .cta-note { margin-top: 12px; }
+    @media (max-width: 559px) and (max-height: 700px) {
       .brand { margin: 0 0 14px; }
-      .intro h1 { font-size: 1.75rem; }
-      .intro .lead { margin-top: 8px; font-size: 1.02rem; }
-      .intro .trust { margin-top: 14px; gap: 8px; }
-      .intro .skip { margin-top: 4px; }
+      .intro h1 { font-size: 1.7rem; }
+      .preview { margin-top: 16px; }
+      .pv-card { padding: 14px 16px; }
+      .pv-price { font-size: 1.9rem; }
+      .intro .lead { margin-top: 12px; }
     }
     .trust { list-style: none; margin-top: 22px; display: grid; gap: 10px; padding: 0; }
     .trust li { display: flex; align-items: center; gap: 10px; font-size: 1.02rem; font-weight: 650; color: var(--ink); }
@@ -407,8 +407,6 @@ const AREAS = [
         return parts.join('\n');
       }
 
-      const skip = document.getElementById('skip-wa');
-      if (skip) skip.href = waUrl('Oi! Quero entrar na Rede Tregou.' + (ref ? '\nIndicação: ' + ref : '') + '\nMeu código: ' + ownCode);
 
       function show(n) {
         cur = Math.max(0, Math.min(steps.length - 1, n));
