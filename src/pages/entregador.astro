@@ -101,18 +101,19 @@ const AREAS = [
         <div class="actions"><button class="more-hint" type="button" hidden>Mais opções ↓</button><button class="btn btn-primary continue" data-continue disabled>Continuar</button></div>
       </section>
 
-      <!-- 4 · the neighbourhood they ride most (single, auto-advance) -->
+      <!-- 4 · the neighbourhoods they ride most (up to 3; the third moves on) -->
       <section class="step" data-step="4">
         <div class="body">
           <h2>Onde você mais roda?</h2>
-          <div class="options grid-2">
+          <p class="multi-hint">Até 3 bairros.</p>
+          <div class="options grid-2" data-max="3">
             {AREAS.map((a) => (
-              <button class="opt opt-sm" data-q="areas" data-val={a}>{a}</button>
+              <button class="opt opt-check opt-sm" data-q="areas" data-val={a}>{a}</button>
             ))}
-            <button class="opt opt-sm" data-q="areas" data-val="Outro">Outro</button>
+            <button class="opt opt-check opt-sm" data-q="areas" data-val="Outro">Outro</button>
           </div>
         </div>
-        <div class="actions actions-hint"><button class="more-hint" type="button" hidden>Mais opções ↓</button></div>
+        <div class="actions"><button class="more-hint" type="button" hidden>Mais opções ↓</button><button class="btn btn-primary continue" data-continue disabled>Continuar</button></div>
       </section>
 
       <!-- 5 · vehicle (single, auto-advance) -->
@@ -316,6 +317,7 @@ const AREAS = [
       .step:not(.intro) h2 { font-size: 1.35rem; }
       .multi-hint { margin-top: 4px; font-size: 0.9rem; }
     }
+    .options.maxed .opt-check:not(.selected) { opacity: 0.4; }
     .trust { list-style: none; margin-top: 22px; display: grid; gap: 10px; padding: 0; }
     .trust li { display: flex; align-items: center; gap: 10px; font-size: 1.02rem; font-weight: 650; color: var(--ink); }
     .tk { width: 24px; height: 24px; border-radius: 8px; background: var(--g-tint); color: var(--g-deep); display: grid; place-items: center; font-size: 0.8rem; font-weight: 900; }
@@ -452,7 +454,7 @@ const AREAS = [
       // both ends: greeting, the answers, the codes.
       function waMessage() {
         const data = [];
-        if (items('areas').length) data.push('📍 *Bairro:* ' + items('areas').join(', '));
+        if (items('areas').length) data.push('📍 *' + (items('areas').length > 1 ? 'Bairros' : 'Bairro') + ':* ' + items('areas').join(', '));
         if (items('hours').length) data.push('🕐 *Horários:* ' + items('hours').join(', '));
         if (items('work').length) data.push('💼 *Trabalho hoje:* ' + items('work').join(', '));
         if (answers.vehicle) data.push('🏍️ *Moto e CNH:* ' + LABEL.vehicle[answers.vehicle]);
@@ -516,19 +518,28 @@ const AREAS = [
         const contBtn = step.querySelector('[data-continue]');
         const hint = step.querySelector('.multi-hint');
         const baseHint = hint ? hint.textContent : '';
+        const box = step.querySelector('.options');
+        const max = box && box.dataset.max ? parseInt(box.dataset.max, 10) : 0;
         function sync(n) {
           if (contBtn) contBtn.textContent = n === 0 ? 'Continuar' : 'Continuar (' + n + ')';
           if (!hint) return;
-          hint.textContent = n === 0 ? baseHint : 'Pode marcar mais, ou continuar.';
+          hint.textContent = n === 0 ? baseHint
+            : max ? (n >= max ? n + ' de ' + max + ' marcados.' : n + ' de ' + max + ' — pode marcar mais, ou continuar.')
+            : 'Pode marcar mais, ou continuar.';
           hint.classList.toggle('on', n > 0);
         }
         checks.forEach((o) =>
           o.addEventListener('click', () => {
             const v = o.dataset.val;
             if (set.has(v)) { set.delete(v); o.classList.remove('selected'); }
+            else if (max && set.size >= max) { return; }
             else { set.add(v); o.classList.add('selected'); }
             if (contBtn) contBtn.disabled = set.size === 0;
+            if (box && max) box.classList.toggle('maxed', set.size >= max);
             sync(set.size);
+            if (max && set.size === max) {
+              setTimeout(function () { if (set.size === max && steps[cur] === step) { answers[q] = Array.from(set); show(cur + 1); } }, 350);
+            }
           })
         );
         if (contBtn)
