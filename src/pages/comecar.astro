@@ -183,8 +183,14 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       display: flex; align-items: center; justify-content: space-between; gap: 12px;
     }
     .opt::after { content: "→"; color: var(--line); font-weight: 700; transition: color .15s, transform .15s; }
-    .opt:hover { border-color: var(--g); background: var(--g-tint); }
-    .opt:hover::after { color: var(--g); transform: translateX(3px); }
+    /* Hover only where there is a mouse: a touch screen keeps :hover on the
+       last tapped option, and an unticked box stayed painted as picked. On a
+       checkbox, hover is the border alone — the fill means "picked". */
+    @media (hover: hover) {
+      .opt:hover { border-color: var(--g); }
+      .opt:not(.opt-check):hover { background: var(--g-tint); }
+      .opt:hover::after { color: var(--g); transform: translateX(3px); }
+    }
     .opt:active { transform: scale(0.985); }
     .opt:focus-visible { outline: 2px solid var(--g); outline-offset: 2px; }
 

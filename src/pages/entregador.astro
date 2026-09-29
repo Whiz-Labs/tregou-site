@@ -336,7 +336,12 @@ const AREAS = [
     .opt::after { content: "→"; color: #9aa89f; font-weight: 800; }
     .opt:active { transform: scale(0.98); background: var(--g-tint); }
     .opt:focus-visible { outline: 3px solid var(--g); outline-offset: 2px; }
-    @media (hover: hover) { .opt:hover { border-color: var(--g); background: var(--g-tint); } }
+    /* On a checkbox, hover is the border alone — the fill means "picked", and
+       an unticked box under the mouse must not look picked. */
+    @media (hover: hover) {
+      .opt:hover { border-color: var(--g); }
+      .opt:not(.opt-check):hover { background: var(--g-tint); }
+    }
 
     .multi-hint { font-size: 0.95rem; color: var(--muted); margin-top: 6px; }
     .multi-hint.on { color: var(--g-deep); font-weight: 700; }
