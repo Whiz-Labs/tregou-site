@@ -3,8 +3,46 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { config } from '../config';
 
 const pageTitle = 'Tregou — Suas entregas no automático';
-const pageDescription = 'Pedido do iFood, WhatsApp ou balcão vai sozinho pro entregador certo, na melhor rota. Entregador? Entre na Rede Tregou.';
-const { whatsappLink, whatsappNumber, signupLink, privacyLink } = config;
+const pageDescription = 'Pedidos dos apps de delivery, do WhatsApp ou do balcão vão sozinhos pros seus entregadores, na melhor rota. Entregador? Entre na Rede Tregou.';
+const { whatsappLink, whatsappNumber, signupLink, privacyLink, orderApps } = config;
+
+// "iFood" / "iFood e Anota AI" / "iFood, Anota AI e X"
+const listPt = (names: readonly string[]) =>
+  names.length <= 1 ? names.join('') : `${names.slice(0, -1).join(', ')} e ${names[names.length - 1]}`;
+const liveApps = orderApps.filter((a) => a.live).map((a) => a.name);
+const soonApps = orderApps.filter((a) => !a.live).map((a) => a.name);
+const appsNow =
+  `${listPt(liveApps)} hoje` + (soonApps.length ? `, ${listPt(soonApps)} chegando` : '') + ' e outros apps aos poucos';
+
+const faqs = [
+  {
+    q: 'O que o Tregou resolve no dia a dia?',
+    lead: 'Tira você do papel de despachante. Hoje é você quem decide quem leva cada pedido, junta entregas no grupo do WhatsApp, explica o caminho e responde "cadê meu pedido?".',
+    points: [
+      'cada pedido vai sozinho pro entregador certo, juntando os do mesmo caminho;',
+      'o entregador recebe a rota pronta no app, com o prazo de cada entrega à vista;',
+      'você acompanha todos no mapa, ao vivo.',
+    ],
+    tail: 'O melhor jeito de entender é ver com os seus pedidos.',
+    cta: true,
+  },
+  {
+    q: 'Quais pedidos entram? Preciso ter iFood?',
+    lead: `Não precisa. Você cria a conta e conecta seus apps de pedido depois, em Integrações: ${appsNow}. Pedidos do WhatsApp e do balcão você lança no painel em segundos.`,
+  },
+  {
+    q: 'O que o entregador precisa?',
+    lead: 'Um celular Android com o app do Tregou. A gente manda o link de instalação, e ele entra com o número de telefone.',
+  },
+  {
+    q: 'Funciona na minha cidade?',
+    lead: 'O Tregou funciona em qualquer cidade com os seus entregadores. A Rede Tregou, de entregadores parceiros, está começando em João Pessoa.',
+  },
+  {
+    q: 'Quanto custa?',
+    lead: 'As 10 primeiras empresas, as Fundadoras, usam 1 mês grátis. Depois, você escolhe o plano que cabe na sua operação. Pra começar não precisa de cartão.',
+  },
+];
 
 // A business that isn't ready to sign up gets a conversation, not a form:
 // the message is typed for them, they only press send.
@@ -38,7 +76,7 @@ const fonts =
       <div class="hero-main">
         <div class="hero-copy">
           <h1>Suas entregas no <span class="accent">automático</span>.</h1>
-          <p class="lede">Pedido do iFood, WhatsApp ou balcão vai sozinho pros seus entregadores, na melhor rota.</p>
+          <p class="lede">Pedidos dos apps de delivery, do WhatsApp ou do balcão vão sozinhos pros seus entregadores, na melhor rota.</p>
 
           <div class="doors">
             <div class="door-col">
@@ -149,7 +187,7 @@ const fonts =
       <ol class="steps">
         <li>
           <span class="step-n">1</span>
-          <span class="step-text"><b>O pedido entra</b>Do iFood, sozinho. WhatsApp e balcão, você lança em segundos.</span>
+          <span class="step-text"><b>O pedido entra</b>Do {listPt(liveApps)}, sozinho. WhatsApp e balcão, você lança em segundos.</span>
         </li>
         <li>
           <span class="step-n">2</span>
@@ -160,6 +198,42 @@ const fonts =
           <span class="step-text"><b>Chega na porta</b>Rota pronta no app dele. Você vê tudo no mapa.</span>
         </li>
       </ol>
+    </div>
+  </section>
+
+  <!-- Answers the questions a business asks before it signs up. The first one
+       is open: it is the problem every restaurant has, and it ends on the
+       free trial. Native <details>, so it works without script; each question
+       carries data-ev, so we learn which ones people actually open. -->
+  <section class="faq-section">
+    <div class="wrap faq-grid">
+      <div class="faq-intro">
+        <h2>Perguntas frequentes</h2>
+        <p>Outra dúvida? <a href={waBusiness} data-ev="faq_whatsapp" target="_blank" rel="noopener">Fale no WhatsApp</a></p>
+      </div>
+      <div class="faq-list">
+        {faqs.map((f, i) => (
+          <details open={i === 0}>
+            <summary data-ev={`faq_${i + 1}`}>
+              <span>{f.q}</span>
+              <i aria-hidden="true"></i>
+            </summary>
+            <div class="faq-a">
+              <p>{f.lead}</p>
+              {f.points && (
+                <>
+                  <p>Com o Tregou:</p>
+                  <ul>{f.points.map((p) => <li>{p}</li>)}</ul>
+                </>
+              )}
+              {f.tail && <p>{f.tail}</p>}
+              {f.cta && (
+                <a href={`${signupLink}?src=faq`} class="btn-primary" data-ev="faq_signup" target="_blank" rel="noopener">Testar grátis →</a>
+              )}
+            </div>
+          </details>
+        ))}
+      </div>
     </div>
   </section>
 
@@ -561,6 +635,74 @@ const fonts =
   .step-text b { font-size: 17px; color: var(--ink); }
   @media (min-width: 768px) { .step-text b { font-size: 19px; } }
 
+  /* ---------- FAQ ---------- */
+  .faq-section { padding: 8px 0 48px; }
+  @media (min-width: 768px) { .faq-section { padding: 8px 0 88px; } }
+  .faq-grid { display: grid; gap: 12px; }
+  @media (min-width: 900px) { .faq-grid { grid-template-columns: 300px minmax(0, 1fr); gap: 64px; align-items: start; } }
+  .faq-intro { display: flex; flex-direction: column; gap: 12px; }
+  .faq-intro h2 {
+    font-family: var(--display);
+    font-weight: 700;
+    letter-spacing: -0.022em;
+    line-height: 1.1;
+    font-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.25rem);
+  }
+  .faq-intro p { font-size: 15px; line-height: 1.5; color: var(--ink-muted); }
+  @media (min-width: 768px) { .faq-intro p { font-size: 16px; } }
+  .faq-intro a,
+  .faq-a a:not(.btn-primary) { color: var(--emerald-700); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+  /* On a phone the WhatsApp line goes under the list, where the doubt is. */
+  @media (max-width: 899px) { .faq-intro p { order: 2; } .faq-intro { display: contents; } .faq-list { order: 1; } .faq-grid { display: flex; flex-direction: column; } .faq-intro h2 { order: 0; } }
+
+  .faq-list { border-top: 1px solid var(--line); }
+  .faq-list details { border-bottom: 1px solid var(--line); }
+  .faq-list summary {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 56px;
+    padding: 18px 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  @media (min-width: 768px) { .faq-list summary { font-size: 19px; } }
+  .faq-list summary::-webkit-details-marker { display: none; }
+  .faq-list summary:focus-visible { outline: 3px solid var(--emerald-600); outline-offset: 2px; border-radius: 6px; }
+  .faq-list summary i {
+    flex-shrink: 0;
+    position: relative;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #edece6;
+  }
+  .faq-list summary i::before,
+  .faq-list summary i::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 12px;
+    height: 2px;
+    border-radius: 1px;
+    background: var(--emerald-700);
+    transform: translate(-50%, -50%);
+    transition: transform 0.2s ease;
+  }
+  .faq-list summary i::after { transform: translate(-50%, -50%) rotate(90deg); }
+  .faq-list details[open] summary i::after { transform: translate(-50%, -50%) rotate(0deg); }
+  .faq-a { padding: 0 0 22px; display: flex; flex-direction: column; gap: 12px; max-width: 640px; }
+  .faq-a p,
+  .faq-a li { font-size: 15px; line-height: 1.6; color: var(--ink-muted); }
+  @media (min-width: 768px) { .faq-a p, .faq-a li { font-size: 16px; } }
+  .faq-a ul { padding-left: 20px; display: flex; flex-direction: column; gap: 4px; }
+  .faq-a .btn-primary { align-self: flex-start; margin-top: 4px; }
+
   /* ---------- With or without couriers ---------- */
   .fork-section { padding: 8px 0 40px; }
   @media (min-width: 768px) { .fork-section { padding: 8px 0 72px; } }
@@ -643,7 +785,7 @@ const fonts =
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .door, .wa-btn { transition: none; }
+    .door, .wa-btn, .faq-list summary i::before, .faq-list summary i::after { transition: none; }
     .door:hover { transform: none; }
   }
 </style>

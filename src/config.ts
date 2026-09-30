@@ -12,4 +12,11 @@ export const config = {
   // identifiers are written — a disclosure only linked from the panel would
   // not be findable by the people it is about.
   privacyLink: 'https://panel.tregou.app/privacy',
+  // Order apps the panel pulls orders from by itself. The landing's step 1
+  // and the FAQ are written from this list: when an integration goes live,
+  // flip `live` (or add a line) and the page follows.
+  orderApps: [
+    { name: 'iFood', live: true },
+    { name: 'Anota AI', live: false },
+  ],
 } as const;
