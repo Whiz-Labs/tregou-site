@@ -16,6 +16,7 @@ const appsNow =
 
 const faqs = [
   {
+    id: 'resolve',
     q: 'O que o Tregou resolve no dia a dia?',
     lead: 'Tira você do papel de despachante. Hoje é você quem decide quem leva cada pedido, junta entregas no grupo do WhatsApp, explica o caminho e responde "cadê meu pedido?".',
     points: [
@@ -27,24 +28,29 @@ const faqs = [
     cta: true,
   },
   {
+    id: 'pedidos',
     q: 'Quais pedidos entram? Preciso ter iFood?',
     lead: `Não precisa. Você cria a conta e conecta seus apps de pedido depois, em Integrações: ${appsNow}. Pedidos do WhatsApp e do balcão você lança no painel em segundos.`,
   },
   {
+    id: 'entregador',
     q: 'O que o entregador precisa?',
     lead: 'Um celular Android com o app do Tregou. A gente manda o link de instalação, e ele entra com o número de telefone.',
   },
   {
+    id: 'cidade',
     q: 'Funciona na minha cidade?',
     lead: 'O Tregou funciona em qualquer cidade com os seus entregadores. A Rede Tregou, de entregadores parceiros, está começando em João Pessoa.',
   },
   {
+    id: 'custo',
     q: 'Quanto custa?',
     lead: 'Todo negócio começa testando grátis, sem cartão. Depois, você escolhe o plano que cabe na sua operação.',
   },
   {
     // The seat is earned on the first delivery, not at signup (migrations
     // 051/084); after the 10 the trial is one week.
+    id: 'fundadora',
     q: 'Como viro Fundadora?',
     lead: 'As 10 primeiras empresas que fizerem a primeira entrega pelo Tregou viram Fundadoras: 1 mês grátis, contado a partir dessa entrega, e preço travado pra sempre.',
     tail: 'Não basta se cadastrar: a vaga é de quem começa a usar. Depois das 10, o teste grátis é de 1 semana.',
@@ -224,7 +230,7 @@ const fonts =
       <div class="faq-list">
         {faqs.map((f, i) => (
           <details open={i === 0}>
-            <summary data-ev={`faq_${i + 1}`}>
+            <summary data-ev={`faq_${f.id}`}>
               <span>{f.q}</span>
               <i aria-hidden="true"></i>
             </summary>

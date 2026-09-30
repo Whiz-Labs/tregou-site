@@ -99,13 +99,44 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
         var host = location.hostname;
         var isLocal = host === 'localhost' || host === '127.0.0.1' || host.endsWith('.local');
         var internal = false;
+        var justMarked = false;
         try {
           var q = new URLSearchParams(location.search);
+          if (q.get('internal') === '1' && localStorage.getItem('tg_internal') !== '1') justMarked = true;
           if (q.get('internal') === '1') localStorage.setItem('tg_internal', '1');
           if (q.get('internal') === '0') localStorage.removeItem('tg_internal');
           internal = localStorage.getItem('tg_internal') === '1';
           if (q.get('tg_debug') === '1') { isLocal = false; internal = false; }
         } catch (e) { /* storage blocked — treat as a normal visitor */ }
+
+        // Marking a team device (the admin panel's "Marcar aparelho da equipe"
+        // link) leaves one trace: a team_device milestone under this browser's
+        // visitor id. The panel then drops that id everywhere — including the
+        // visits it made before it was marked — and can say how many team
+        // devices it is leaving out. Nothing else is ever logged from it.
+        if (justMarked && !isLocal) {
+          try {
+            var markId = localStorage.getItem('tg_vid');
+            if (!markId) {
+              markId = Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+              localStorage.setItem('tg_vid', markId);
+            }
+            fetch(sbUrl.replace(/\/$/, '') + '/rest/v1/site_events', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', apikey: sbKey, Authorization: 'Bearer ' + sbKey, Prefer: 'return=minimal' },
+              body: JSON.stringify({ event: 'milestone', name: 'team_device', path: location.pathname.slice(0, 200), visitor_id: markId }),
+              keepalive: true,
+            }).catch(function () {});
+          } catch (e) { /* ignore */ }
+          document.addEventListener('DOMContentLoaded', function () {
+            var note = document.createElement('div');
+            note.textContent = 'Este aparelho não conta mais nas métricas.';
+            note.setAttribute('role', 'status');
+            note.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:99;padding:12px 18px;border-radius:12px;background:#1f2a30;color:#fff;font:600 14px/1.4 system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.25)';
+            document.body.appendChild(note);
+            setTimeout(function () { note.remove(); }, 5000);
+          });
+        }
 
         window.__tgMuted = isLocal || internal;
         if (window.__tgMuted) {
@@ -193,7 +224,32 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
           } catch (e) { return Promise.resolve(); }
         }
 
-        track('pageview');
+        // A visit counts once the page has really been looked at: 3 seconds
+        // on screen, or any touch, key or scroll before that. Link-preview
+        // fetchers, most bots and a tap that closes the tab straight away
+        // never get there, so they are never counted as people.
+        var engaged = false;
+        var engageTimer = null;
+        function engage() {
+          if (engaged) return;
+          engaged = true;
+          if (engageTimer) clearTimeout(engageTimer);
+          track('pageview');
+        }
+        function armEngageTimer() {
+          if (engaged) return;
+          if (document.visibilityState === 'visible') {
+            if (!engageTimer) engageTimer = setTimeout(engage, 3000);
+          } else if (engageTimer) {
+            clearTimeout(engageTimer);
+            engageTimer = null;
+          }
+        }
+        document.addEventListener('visibilitychange', armEngageTimer);
+        ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach(function (type) {
+          window.addEventListener(type, engage, { once: true, passive: true, capture: true });
+        });
+        armEngageTimer();
 
         // The panel is another origin (panel.tregou.app) and every CTA opens it
         // in a new tab, so neither this sessionStorage nor the tab identity
@@ -225,7 +281,10 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
             if (!t) return;
 
             var el = t.closest('[data-ev]');
-            if (el) track('cta_click', el.getAttribute('data-ev'));
+            if (el) {
+              engage();
+              track('cta_click', el.getAttribute('data-ev'));
+            }
 
             // Stamped at click time rather than on load: the quiz only builds
             // its signup href once the result appears. The capture phase still
@@ -241,7 +300,10 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 
         // Let page scripts log their own milestones (e.g. the quiz result) and
         // build their own signup links (the quiz appends the answers itself).
-        window.__tgTrack = track;
+        window.__tgTrack = function (event, name) {
+          engage();
+          return track(event, name);
+        };
         window.__tgSid = sid;
         window.__tgVid = vid;
       })();
