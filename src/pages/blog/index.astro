@@ -1,0 +1,95 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { config } from '../../config';
+import { getPosts } from '../../blog';
+
+const posts = await getPosts();
+const [featured, ...rest] = posts;
+// Category chips only earn their place once there is something to filter.
+const categories = [...new Set(posts.map((p) => p.data.category))];
+
+const title = 'Blog do Tregou — guias de delivery com entregadores próprios';
+const description =
+  'Guias práticos para quem faz delivery com entregadores próprios: fila, rotas, prazos, taxa de entrega e o fechamento do dia.';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    name: 'Blog do Tregou',
+    url: 'https://tregou.app/blog/',
+    inLanguage: 'pt-BR',
+    publisher: { '@type': 'Organization', name: 'Tregou', url: 'https://tregou.app' },
+  },
+];
+---
+
+<BlogLayout title={title} description={description} jsonLd={jsonLd}>
+  <div slot="top" class="intro">
+    <h1>Blog do Tregou</h1>
+    <p>Guias práticos para quem faz delivery com entregadores próprios: fila, rotas, prazos, taxa de entrega e o fechamento do dia.</p>
+  </div>
+
+  <section class="list">
+    {categories.length > 1 && (
+      <div class="cats" aria-label="Categorias">
+        {categories.map((c) => <span class="cat-chip">{c}</span>)}
+      </div>
+    )}
+
+    {featured && (
+      <div class="featured">
+        <PostCard post={featured} big />
+        <div class="promo">
+          <span class="promo-kicker">Tregou</span>
+          <span class="promo-title">Suas entregas no automático.</span>
+          <span class="promo-text">Cada pedido vai sozinho para o entregador certo, na melhor rota. Teste grátis, sem cartão.</span>
+          <a href={`${config.signupLink}?src=blog`} class="btn-neon" data-ev="blog_signup" target="_blank" rel="noopener">Criar conta grátis →</a>
+        </div>
+      </div>
+    )}
+
+    {rest.length > 0 && (
+      <div class="grid">
+        {rest.map((p) => <PostCard post={p} />)}
+      </div>
+    )}
+  </section>
+</BlogLayout>
+
+<style>
+  .intro { padding: 20px 0 44px; display: flex; flex-direction: column; gap: 14px; max-width: 760px; }
+  @media (min-width: 768px) { .intro { padding: 40px 0 72px; gap: 16px; } }
+  h1 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(2.5rem, 1.9rem + 2vw, 3.75rem);
+    line-height: 1.02;
+    letter-spacing: -0.033em;
+    color: #fff;
+  }
+  .intro p { font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem); line-height: 1.5; color: var(--on-slate-muted); }
+
+  .list { padding: 40px 0 64px; display: flex; flex-direction: column; gap: 24px; }
+  @media (min-width: 768px) { .list { padding: 56px 0 88px; gap: 32px; } }
+
+  .cats { display: flex; flex-wrap: wrap; gap: 10px; }
+  .cat-chip { padding: 9px 16px; border-radius: 999px; font-size: 14px; font-weight: 600; border: 1px solid #d5d4ce; color: var(--ink-muted); }
+
+  .featured { display: grid; gap: 16px; }
+  @media (min-width: 900px) { .featured { grid-template-columns: minmax(0, 1fr) 420px; gap: 24px; } }
+
+  .promo { border-radius: 20px; background: var(--slate); color: var(--on-slate); padding: 28px; display: flex; flex-direction: column; gap: 14px; }
+  @media (min-width: 900px) { .promo { padding: 32px; } }
+  .promo-kicker { font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--neon); }
+  .promo-title { font-family: var(--display); font-size: 26px; line-height: 1.15; font-weight: 700; }
+  .promo-text { font-size: 15px; line-height: 1.55; color: var(--on-slate-muted); }
+  .btn-neon { margin-top: auto; align-self: flex-start; padding: 14px 22px; border-radius: 12px; background: var(--neon); color: var(--ink-on-neon); font-size: 15px; font-weight: 700; }
+  .btn-neon:hover { background: #2bd67c; }
+  .btn-neon:focus-visible { outline: 3px solid var(--emerald-600); outline-offset: 3px; }
+
+  .grid { display: grid; gap: 16px; }
+  @media (min-width: 700px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 1100px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; } }
+</style>

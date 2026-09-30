@@ -1,0 +1,48 @@
+---
+import { readingMinutes, type Post } from '../blog';
+
+interface Props {
+  post: Post;
+  /** The featured card on the blog list: bigger type. */
+  big?: boolean;
+}
+
+const { post, big = false } = Astro.props;
+const minutes = readingMinutes(post.body);
+---
+
+<a href={`/blog/${post.id}/`} class:list={['card', { big }]}>
+  {post.data.cover && <img src={post.data.cover} alt="" width="1440" height="720" loading="lazy" decoding="async" class="thumb" />}
+  <span class="cat">{post.data.category}</span>
+  <span class="title">{post.data.title}</span>
+  <span class="summary">{post.data.description}</span>
+  <span class="meta">{minutes} min de leitura</span>
+</a>
+
+<style>
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    color: var(--ink);
+    transition: border-color 0.15s ease;
+  }
+  .card:hover { border-color: #cfcec8; }
+  .card:focus-visible { outline: 3px solid var(--emerald-600); outline-offset: 3px; }
+  .thumb { width: calc(100% + 48px); max-width: none; height: auto; margin: -24px -24px 4px; border-radius: 19px 19px 0 0; }
+  .cat { font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--emerald-700); }
+  .title { font-family: var(--display); font-size: 21px; line-height: 1.15; font-weight: 700; letter-spacing: -0.015em; }
+  .summary { font-size: 15px; line-height: 1.55; color: var(--ink-muted); }
+  .meta { margin-top: auto; padding-top: 8px; font-size: 13px; font-weight: 600; color: var(--ink-faint); }
+  @media (min-width: 900px) {
+    .big { padding: 36px; }
+    .big .thumb { width: calc(100% + 72px); margin: -36px -36px 8px; }
+    .big .title { font-size: 32px; letter-spacing: -0.025em; }
+    .big .summary { font-size: 17px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .card { transition: none; } }
+</style>

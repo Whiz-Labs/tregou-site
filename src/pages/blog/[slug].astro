@@ -1,0 +1,230 @@
+---
+import { render } from 'astro:content';
+import BlogLayout from '../../layouts/BlogLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { config } from '../../config';
+import { getPosts, readingMinutes, formatDate, type Post } from '../../blog';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post, all: posts } }));
+}
+
+interface Props {
+  post: Post;
+  all: Post[];
+}
+
+const { post, all } = Astro.props;
+const { Content, headings } = await render(post);
+const { title, description, category, date, updated, cover, coverAlt, ogImage } = post.data;
+const minutes = readingMinutes(post.body);
+const toc = headings.filter((h) => h.depth === 2);
+const url = new URL(Astro.url.pathname, Astro.site).toString();
+
+// Same category first, then the newest of the rest.
+const related = [
+  ...all.filter((p) => p.id !== post.id && p.data.category === category),
+  ...all.filter((p) => p.id !== post.id && p.data.category !== category),
+].slice(0, 2);
+
+const signup = `${config.signupLink}?src=blog`;
+const wa = `https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent('Oi! Li o blog do Tregou e quero saber como ele funciona com meus entregadores.')}`;
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: title,
+    description,
+    inLanguage: 'pt-BR',
+    datePublished: date.toISOString(),
+    dateModified: (updated ?? date).toISOString(),
+    mainEntityOfPage: url,
+    image: new URL(ogImage ?? '/og-image.png', Astro.site).toString(),
+    author: { '@type': 'Organization', name: 'Equipe Tregou', url: 'https://tregou.app' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Tregou',
+      logo: { '@type': 'ImageObject', url: 'https://tregou.app/tregou-logo.png' },
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Blog', item: 'https://tregou.app/blog/' },
+      { '@type': 'ListItem', position: 2, name: title, item: url },
+    ],
+  },
+];
+---
+
+<BlogLayout title={`${title} | Tregou`} description={description} ogImage={ogImage} jsonLd={jsonLd}>
+  <div slot="top" class="head">
+    <span class="crumbs"><a href="/blog/">Blog</a> › {category}</span>
+    <h1>{title}</h1>
+    <p class="dek">{description}</p>
+    <span class="meta">Equipe Tregou · <time datetime={date.toISOString()}>{formatDate(date)}</time> · {minutes} min de leitura</span>
+  </div>
+
+  <div class="layout">
+    <article class="prose">
+      {cover && <img src={cover} alt={coverAlt ?? ''} width="1440" height="720" class="cover" />}
+      <Content />
+    </article>
+    <aside class="aside">
+      {toc.length > 0 && (
+        <nav class="toc" aria-label="Nesta página">
+          <span class="toc-title">Nesta página</span>
+          {toc.map((h) => <a href={`#${h.slug}`}>{h.text}</a>)}
+        </nav>
+      )}
+      <div class="aside-cta">
+        <span class="aside-title">Suas entregas no automático.</span>
+        <span class="aside-text">Teste grátis, sem cartão. Leva 2 minutos.</span>
+        <a href={signup} class="btn-neon" data-ev="blog_aside_signup" target="_blank" rel="noopener">Criar conta grátis →</a>
+      </div>
+    </aside>
+  </div>
+
+  <section class="end">
+    <div class="end-copy">
+      <span class="end-title">Deixe a fila andar sozinha.</span>
+      <span class="end-text">O Tregou distribui os pedidos entre seus entregadores, na melhor rota. Teste grátis, sem cartão.</span>
+    </div>
+    <div class="end-actions">
+      <a href={signup} class="btn-neon" data-ev="blog_end_signup" target="_blank" rel="noopener">Criar conta grátis →</a>
+      <a href={wa} class="btn-ghost" data-ev="blog_end_whatsapp" target="_blank" rel="noopener">Falar no WhatsApp</a>
+    </div>
+  </section>
+
+  {related.length > 0 && (
+    <section class="related">
+      <h2>Leia também</h2>
+      <div class="related-grid">
+        {related.map((p) => <PostCard post={p} />)}
+      </div>
+    </section>
+  )}
+  {related.length === 0 && <div class="spacer"></div>}
+</BlogLayout>
+
+<style>
+  .head { padding: 20px 0 40px; display: flex; flex-direction: column; gap: 14px; max-width: 860px; }
+  @media (min-width: 768px) { .head { padding: 40px 0 72px; gap: 18px; } }
+  .crumbs { font-size: 14px; color: var(--on-slate-faint); }
+  .crumbs a { color: var(--on-slate-muted); font-weight: 600; }
+  .crumbs a:hover { color: var(--on-slate); }
+  h1 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(2.25rem, 1.6rem + 2.2vw, 3.5rem);
+    line-height: 1.04;
+    letter-spacing: -0.032em;
+    color: #fff;
+    text-wrap: balance;
+  }
+  .dek { font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem); line-height: 1.5; color: var(--on-slate-muted); }
+  .meta { font-size: 14px; color: var(--on-slate-faint); }
+
+  .layout { padding-top: 36px; display: grid; gap: 40px; }
+  @media (min-width: 1100px) {
+    .layout { padding-top: 72px; grid-template-columns: minmax(0, 720px) 340px; justify-content: space-between; align-items: start; }
+  }
+
+  .prose { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+  .prose :global(p) { font-size: 17px; line-height: 1.7; color: #3e4d47; }
+  @media (min-width: 768px) { .prose :global(p) { font-size: 18px; } }
+  .prose :global(h2) {
+    margin-top: 20px;
+    font-family: var(--display);
+    font-size: clamp(1.5rem, 1.35rem + 0.5vw, 1.75rem);
+    line-height: 1.12;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    scroll-margin-top: 24px;
+  }
+  @media (min-width: 768px) { .prose :global(h2) { margin-top: 28px; } }
+  .prose :global(ul),
+  .prose :global(ol) { padding-left: 22px; display: flex; flex-direction: column; gap: 8px; }
+  .prose :global(li) { font-size: 17px; line-height: 1.65; color: #3e4d47; }
+  .prose :global(strong) { color: var(--ink); }
+  .prose :global(a) { color: var(--emerald-700); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+  .prose :global(figure) { margin: 10px 0; display: flex; flex-direction: column; gap: 10px; }
+  .prose :global(figure img) { width: 100%; height: auto; border-radius: 18px; }
+  .prose :global(figure picture) { display: block; }
+  .prose :global(figcaption) { font-size: 14px; line-height: 1.5; color: var(--ink-faint); }
+
+  /* "No Tregou": one line on how the product handles the rule just read.
+     Light on purpose — the post teaches first; at most three per post. */
+  .prose :global(.no-tregou) {
+    padding: 16px 20px 16px 18px;
+    border-radius: 14px;
+    background: #e6f2ec;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .prose :global(.no-tregou-label) {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--emerald-700);
+  }
+  .prose :global(.no-tregou-label)::before {
+    content: '';
+    width: 18px;
+    height: 18px;
+    background: url('/brand/tregou-icon-green.svg') center / contain no-repeat;
+  }
+  .prose :global(.no-tregou p) { font-size: 16px; line-height: 1.55; color: var(--ink); }
+  .prose :global(.no-tregou a) { font-size: 15px; align-self: flex-start; }
+
+  .cover { width: 100%; height: auto; border-radius: 20px; }
+
+  .aside { display: none; }
+  @media (min-width: 1100px) { .aside { display: flex; flex-direction: column; gap: 20px; position: sticky; top: 24px; } }
+  .toc { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 12px; }
+  .toc-title { font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-faint); }
+  .toc a { font-size: 14px; line-height: 1.4; color: var(--ink-muted); }
+  .toc a:hover { color: var(--ink); }
+  .aside-cta { border-radius: 20px; background: var(--slate); color: var(--on-slate); padding: 24px; display: flex; flex-direction: column; gap: 12px; }
+  .aside-title { font-family: var(--display); font-size: 22px; line-height: 1.15; font-weight: 700; }
+  .aside-text { font-size: 14px; line-height: 1.55; color: var(--on-slate-muted); }
+
+  .btn-neon,
+  .btn-ghost { display: flex; align-items: center; justify-content: center; min-height: 50px; padding: 14px 22px; border-radius: 12px; font-size: 15px; font-weight: 700; }
+  .aside-cta .btn-neon { align-self: flex-start; min-height: 0; padding: 12px 20px; }
+  .btn-neon { background: var(--neon); color: var(--ink-on-neon); }
+  .btn-neon:hover { background: #2bd67c; }
+  .btn-ghost { border: 1px solid var(--slate-line); color: var(--on-slate); font-weight: 600; }
+  .btn-ghost:hover { border-color: var(--on-slate-faint); }
+  .btn-neon:focus-visible,
+  .btn-ghost:focus-visible { outline: 3px solid var(--emerald-600); outline-offset: 3px; }
+
+  .end { margin-top: 48px; padding: 28px 22px; border-radius: 24px; background: var(--slate); color: var(--on-slate); display: flex; flex-direction: column; gap: 22px; }
+  .end-copy { display: flex; flex-direction: column; gap: 10px; }
+  .end-title { font-family: var(--display); font-size: 26px; line-height: 1.1; font-weight: 700; color: #fff; }
+  .end-text { font-size: 16px; line-height: 1.5; color: var(--on-slate-muted); }
+  .end-actions { display: flex; flex-direction: column; gap: 12px; flex-shrink: 0; }
+  @media (min-width: 900px) {
+    .end { margin-top: 88px; padding: 48px 56px; flex-direction: row; align-items: center; justify-content: space-between; }
+    .end-copy { max-width: 640px; }
+    .end-title { font-size: 34px; }
+    .end-actions { flex-direction: row; }
+  }
+
+  .related { padding: 48px 0; display: flex; flex-direction: column; gap: 24px; }
+  @media (min-width: 900px) { .related { padding: 88px 0; } }
+  .related h2 { font-family: var(--display); font-size: clamp(1.625rem, 1.4rem + 0.6vw, 2rem); line-height: 1.1; font-weight: 700; letter-spacing: -0.02em; }
+  .related-grid { display: grid; gap: 16px; }
+  @media (min-width: 900px) { .related-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; } }
+  .spacer { height: 48px; }
+  @media (min-width: 900px) { .spacer { height: 88px; } }
+</style>
