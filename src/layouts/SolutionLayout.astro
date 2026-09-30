@@ -9,6 +9,8 @@ import BaseLayout from './BaseLayout.astro';
 import { config } from '../config';
 import { solutionPages } from '../solutions';
 import '../styles/brand.css';
+import PostCard from '../components/PostCard.astro';
+import { getPosts } from '../blog';
 
 interface Item {
   title: string;
@@ -40,6 +42,15 @@ const signup = `${signupLink}?src=${slug}`;
 const wa = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(waText)}`;
 const here = new URL(Astro.url.pathname, Astro.site).toString();
 const others = solutionPages.filter((p) => !Astro.url.pathname.startsWith(p.href));
+
+// Guides for this audience: posts that point at this page first, then the
+// newest others, three at most. Links both ways help search read the topic.
+const herePath = Astro.url.pathname.replace(/\/+$/, '');
+const posts = await getPosts();
+const guides = [
+  ...posts.filter((p) => p.data.solution === herePath),
+  ...posts.filter((p) => p.data.solution !== herePath),
+].slice(0, 3);
 
 const jsonLd = [
   {
@@ -137,6 +148,18 @@ const fonts =
         ))}
       </p>
     </section>
+
+    {guides.length > 0 && (
+      <section class="block guides">
+        <div class="guides-head">
+          <h2>Guias</h2>
+          <a href="/blog/" class="guides-all">Ver todos →</a>
+        </div>
+        <div class="guides-grid">
+          {guides.map((p) => <PostCard post={p} />)}
+        </div>
+      </section>
+    )}
 
     <section class="block faq">
       <h2>Perguntas frequentes</h2>
@@ -331,6 +354,13 @@ const fonts =
   }
   .band-text { display: flex; flex-direction: column; gap: 4px; font-size: 15px; line-height: 1.5; color: var(--on-slate-muted); }
   .band-text b { font-size: 17px; color: #fff; }
+
+  .guides-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+  .guides-all { font-size: 15px; font-weight: 700; color: var(--emerald-700); }
+  .guides-all:hover { text-decoration: underline; }
+  .guides-grid { display: grid; gap: 16px; margin-top: 6px; }
+  @media (min-width: 700px) { .guides-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 1100px) { .guides-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; } }
 
   .faq { gap: 14px; }
   @media (min-width: 900px) { .faq { display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: 64px; align-items: start; } }

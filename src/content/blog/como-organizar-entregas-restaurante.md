@@ -1,5 +1,6 @@
 ---
 title: Como organizar as entregas do seu restaurante com entregadores próprios
+seoTitle: 'Como organizar as entregas do restaurante | Tregou'
 description: Oito regras simples para parar de despachar pedido no grito, do rodízio entre os motoboys ao fechamento do dia.
 category: Operação
 date: 2026-09-30

@@ -8,6 +8,11 @@ const blog = defineCollection({
   schema: z.object({
     /** The page <title> and H1. */
     title: z.string(),
+    /**
+     * The <title> when "<title> | Tregou" runs past ~60 characters and Google
+     * would cut it. The H1 keeps the full title.
+     */
+    seoTitle: z.string().max(60).optional(),
     /** Meta description and the line under the H1. */
     description: z.string(),
     category: z.enum(['Operação', 'Entregadores', 'Custos', 'Farmácias']),

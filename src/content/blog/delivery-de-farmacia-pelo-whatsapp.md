@@ -1,5 +1,6 @@
 ---
 title: 'Delivery de farmácia pelo WhatsApp: pedidos, troco e pagamento'
+seoTitle: 'Delivery de farmácia pelo WhatsApp: troco e pagamento'
 description: Como organizar o pedido que chega por mensagem, do primeiro “oi” até o caixa fechar sem diferença.
 category: Farmácias
 date: 2026-09-30

@@ -1,5 +1,6 @@
 ---
 title: 'Grupo de WhatsApp para despachar entregas: quando para de funcionar'
+seoTitle: 'Grupo de WhatsApp de entregas: quando para de funcionar'
 description: Os sinais de que o grupo dos entregadores virou gargalo, e o que colocar no lugar sem complicar a operação.
 category: Operação
 date: 2026-09-30

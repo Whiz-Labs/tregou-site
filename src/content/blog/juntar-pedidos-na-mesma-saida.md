@@ -1,5 +1,6 @@
 ---
 title: Como juntar pedidos na mesma saída sem atrasar ninguém
+seoTitle: 'Como juntar pedidos na mesma saída | Tregou'
 description: Quando vale a pena levar dois pedidos juntos, quando é melhor mandar separado e quanto tempo segurar um pedido pronto.
 category: Operação
 date: 2026-09-30

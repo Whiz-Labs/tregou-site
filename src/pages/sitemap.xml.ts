@@ -17,8 +17,19 @@ const pages = Object.keys(import.meta.glob('./**/*.astro'))
   .sort();
 
 export const GET: APIRoute = async ({ site }) => {
-  const posts = (await getPosts()).map((p) => `/blog/${p.id}/`);
-  const urls = [...pages, ...posts].map((route) => `  <url><loc>${new URL(route, site)}</loc></url>`).join('\n');
+  const posts = await getPosts();
+  // A post carries its own date (or its update), so search can tell a changed
+  // guide from an untouched one. Plain pages have no date worth claiming.
+  const entries = [
+    ...pages.map((route) => ({ route, lastmod: null as Date | null })),
+    ...posts.map((p) => ({ route: `/blog/${p.id}/`, lastmod: p.data.updated ?? p.data.date })),
+  ];
+  const urls = entries
+    .map(({ route, lastmod }) => {
+      const date = lastmod ? `<lastmod>${lastmod.toISOString().slice(0, 10)}</lastmod>` : '';
+      return `  <url><loc>${new URL(route, site)}</loc>${date}</url>`;
+    })
+    .join('\n');
   const body = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls}
