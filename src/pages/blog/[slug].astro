@@ -17,7 +17,7 @@ interface Props {
 
 const { post, all } = Astro.props;
 const { Content, headings } = await render(post);
-const { title, description, category, date, updated, cover, coverAlt, ogImage } = post.data;
+const { title, description, category, date, updated, cover, coverAlt, coverCredit, coverCreditUrl, ogImage } = post.data;
 const minutes = readingMinutes(post.body);
 const toc = headings.filter((h) => h.depth === 2);
 const url = new URL(Astro.url.pathname, Astro.site).toString();
@@ -70,7 +70,16 @@ const jsonLd = [
 
   <div class="layout">
     <article class="prose">
-      {cover && <img src={cover} alt={coverAlt ?? ''} width="1440" height="720" class="cover" />}
+      {cover && (
+        <figure class="cover-fig">
+          <img src={cover} alt={coverAlt ?? ''} width="1440" height="720" class="cover" />
+          {coverCredit && (
+            <figcaption class="credit">
+              Foto: {coverCreditUrl ? <a href={coverCreditUrl} target="_blank" rel="noopener">{coverCredit}</a> : coverCredit}
+            </figcaption>
+          )}
+        </figure>
+      )}
       <Content />
     </article>
     <aside class="aside">
@@ -186,7 +195,10 @@ const jsonLd = [
   .prose :global(.no-tregou p) { font-size: 16px; line-height: 1.55; color: var(--ink); }
   .prose :global(.no-tregou a) { font-size: 15px; align-self: flex-start; }
 
+  .cover-fig { display: flex; flex-direction: column; gap: 8px; }
   .cover { width: 100%; height: auto; border-radius: 20px; }
+  .prose .credit { font-size: 12px; color: var(--ink-faint); }
+  .prose .credit a { font-weight: 600; color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 
   .aside { display: none; }
   @media (min-width: 1100px) { .aside { display: flex; flex-direction: column; gap: 20px; position: sticky; top: 24px; } }

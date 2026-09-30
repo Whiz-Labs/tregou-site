@@ -4,9 +4,11 @@ description: Oito regras simples para parar de despachar pedido no grito, do rod
 category: Operação
 date: 2026-09-30
 solution: /sistema-de-entregas-para-restaurantes
-cover: /blog/como-organizar-entregas-restaurante/capa.png
-coverAlt: Mapa com um restaurante e três rotas de entrega saindo dele
-ogImage: /blog/como-organizar-entregas-restaurante/og.png
+cover: /blog/como-organizar-entregas-restaurante/capa.jpg
+coverAlt: Entregador de moto com baú, em movimento numa rua à noite
+coverCredit: Rowan Freeman / Unsplash
+coverCreditUrl: https://unsplash.com/photos/clYlmCaQbzY
+ogImage: /blog/como-organizar-entregas-restaurante/og.jpg
 ---
 
 Todo restaurante com entregadores próprios tem alguém que, no pico, vira despachante. É essa pessoa que decide quem leva cada pedido, manda o endereço no grupo, explica o caminho e atende o cliente que pergunta “cadê meu pedido?”. Enquanto o movimento é pequeno, funciona. Quando cresce, é ali que os atrasos começam.
