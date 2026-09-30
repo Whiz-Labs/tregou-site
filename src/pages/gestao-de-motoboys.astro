@@ -1,0 +1,88 @@
+---
+// Copy mirrors the site canvas (row "Páginas de busca"); change both together.
+import SolutionLayout from '../layouts/SolutionLayout.astro';
+import CourierQueue from '../components/visuals/CourierQueue.astro';
+
+const problem = {
+  title: 'Coordenar motoboy na mão cansa todo mundo',
+  paragraphs: [
+    'Quem já gerenciou entregador conhece: a corrida boa vai sempre para o mesmo, o endereço vai errado no grupo, o motoboy liga perguntando o caminho e, no fim do mês, ninguém concorda sobre quantas entregas foram feitas.',
+    'O Tregou tira essa coordenação das suas mãos. Ele não substitui seus entregadores: organiza o trabalho deles.',
+  ],
+};
+
+const steps = {
+  title: 'O que você controla no painel',
+  items: [
+    {
+      title: 'Fila justa',
+      text: 'Quem está livre há mais tempo recebe a próxima entrega. Quem volta de uma saída entra no fim da fila. Sem favorito, sem pedir corrida.',
+    },
+    {
+      title: 'Mapa ao vivo',
+      text: 'Cada entregador online aparece no mapa, com o pedido que está levando: quem saiu, quem está chegando, quem está livre.',
+    },
+    {
+      title: 'Relatório por entregador',
+      text: 'Entregas feitas dia a dia e distância rodada. Exporta em planilha para fechar o acerto e montar um bônus.',
+    },
+  ],
+};
+
+const list = {
+  title: 'O que o entregador vê no app',
+  items: [
+    { title: 'A entrega chega tocando', text: 'O celular toca com a oferta; ele aceita ou recusa em um toque.' },
+    { title: 'Rota pronta', text: 'Mapa dentro do app e, se ele preferir, abre no Waze ou no Google Maps.' },
+    { title: 'Prazo de cada entrega', text: 'Uma contagem que muda de cor quando o tempo aperta.' },
+    { title: 'Aviso de pedido pronto', text: 'Ele sabe a hora de pegar, sem ficar perguntando no balcão.' },
+    { title: 'Código de entrega do iFood', text: 'Digitado no próprio app, na porta do cliente.' },
+  ],
+};
+
+const who = {
+  title: 'Suas regras',
+  text: 'Você define quantos pedidos cada entregador leva por vez e quanto tempo ele tem para aceitar uma entrega. Funciona para restaurantes, farmácias, pet shops e lojas, com dois entregadores ou com vinte.',
+};
+
+const faqs = [
+  {
+    q: 'O Tregou é um app para motoboy?',
+    a: 'É as duas coisas: um painel para o seu negócio e um app Android para os seus entregadores. O motoboy recebe as entregas no app, com rota e prazo; você acompanha tudo no painel.',
+  },
+  {
+    q: 'Como o sistema decide quem leva cada pedido?',
+    a: 'Por fila: o entregador que está livre há mais tempo recebe a próxima entrega. Se ele não aceitar a tempo, a entrega vai para o próximo. Pedidos do mesmo caminho saem juntos.',
+  },
+  {
+    q: 'Consigo ver onde estão os motoboys?',
+    a: 'Sim, no mapa do painel, ao vivo, enquanto eles estão online no app. A localização é usada só durante o trabalho.',
+  },
+  {
+    q: 'Serve para motoboy fixo e diarista?',
+    a: 'Sim. O Tregou não muda como você paga seus entregadores. Ele organiza as entregas e mostra quantas cada um fez, para facilitar o acerto.',
+  },
+  {
+    q: 'Quanto custa?',
+    a: 'Você começa testando grátis, sem cartão, com todos os seus entregadores. Depois escolhe o plano que cabe na sua operação.',
+  },
+];
+---
+
+<SolutionLayout
+  slug="moto"
+  title="Gestão de motoboys e entregadores próprios | Tregou"
+  description="Controle de entregadores sem planilha nem grupo de WhatsApp: fila justa, entregas oferecidas no app, motoboys no mapa ao vivo e relatório de entregas por entregador."
+  kicker="Gestão de motoboys"
+  h1="Gestão de motoboys sem grupo de WhatsApp"
+  lede="Seus entregadores recebem as entregas no app, na vez de cada um. Você vê todos no mapa e sabe quantas entregas cada um fez, sem planilha."
+  problem={problem}
+  steps={steps}
+  list={list}
+  who={who}
+  faqs={faqs}
+  closing="Cadastre seus entregadores e veja a fila andar sozinha."
+  waText="Oi! Tenho entregadores próprios e quero saber como o Tregou organiza as entregas deles."
+>
+  <CourierQueue slot="visual" />
+</SolutionLayout>

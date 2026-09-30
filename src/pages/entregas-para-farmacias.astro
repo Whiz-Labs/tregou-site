@@ -1,0 +1,88 @@
+---
+// Copy mirrors the site canvas (row "Páginas de busca"); change both together.
+import SolutionLayout from '../layouts/SolutionLayout.astro';
+import ProofSheet from '../components/visuals/ProofSheet.astro';
+
+const problem = {
+  title: 'O delivery de farmácia é diferente',
+  paragraphs: [
+    'Na farmácia, quase todo pedido chega pelo WhatsApp ou pelo telefone, muitas vezes com pagamento na entrega. O entregador sai com troco, volta com dinheiro e maquininha, e no fim do dia alguém precisa conferir o que foi pago como.',
+    'Quando isso depende de papel e memória, o caixa não fecha.',
+  ],
+};
+
+const steps = {
+  title: 'Como o Tregou ajuda',
+  items: [
+    {
+      title: 'Pedido lançado em segundos',
+      text: 'Cliente, endereço e observações, direto no painel. Endereço confuso? Uma mensagem pronta pede a localização ao cliente pelo WhatsApp.',
+    },
+    {
+      title: 'Distribuição automática',
+      text: 'O pedido vai para o próximo entregador livre, na vez de cada um. Pedidos para o mesmo bairro saem juntos, na ordem certa.',
+    },
+    {
+      title: 'Rota e prazo no app',
+      text: 'O entregador vê o mapa e quanto tempo tem para cada entrega. Você acompanha todos no painel, ao vivo.',
+    },
+  ],
+};
+
+const list = {
+  title: 'Comprovante na entrega',
+  items: [
+    { title: 'Forma de pagamento', text: 'Dinheiro, PIX, crédito ou débito, marcado na porta.' },
+    { title: 'Troco', text: 'Quanto o cliente pediu de troco, registrado no pedido.' },
+    { title: 'Foto', text: 'Da entrega, quando fizer sentido.' },
+    { title: 'Observação', text: 'Um recado para o balcão.' },
+    { title: 'Tudo no histórico do pedido', text: 'Para conferir o caixa sem perguntar a ninguém.' },
+  ],
+};
+
+const who = {
+  title: 'Para quem é',
+  text: 'Para farmácias e drogarias com entregadores próprios que hoje coordenam o delivery pelo WhatsApp. Também serve para pet shops e lojas com o mesmo jeito de trabalhar.',
+};
+
+const faqs = [
+  {
+    q: 'O Tregou serve para farmácia?',
+    a: 'Sim. No cadastro você escolhe o tipo do negócio, e o painel fala a língua da farmácia. Os pedidos do WhatsApp e do balcão entram em segundos e vão para os seus entregadores.',
+  },
+  {
+    q: 'O entregador consegue registrar o pagamento na entrega?',
+    a: 'Sim. Ao confirmar a entrega, ele marca a forma de pagamento, o troco e, se quiser, tira uma foto e deixa uma observação. Você vê tudo no painel.',
+  },
+  {
+    q: 'E se o cliente mandar o endereço errado?',
+    a: 'O painel tem uma mensagem pronta para pedir a localização ao cliente pelo WhatsApp. O cliente manda o link do mapa e o pedido sai com o ponto certo.',
+  },
+  {
+    q: 'Meus entregadores precisam de quê?',
+    a: 'Um celular Android com o app do Tregou. Eles entram com o número de telefone.',
+  },
+  {
+    q: 'Quanto custa?',
+    a: 'Você começa testando grátis, sem cartão. Depois escolhe o plano que cabe na sua operação.',
+  },
+];
+---
+
+<SolutionLayout
+  slug="farm"
+  title="Sistema de entregas para farmácias com entregadores próprios | Tregou"
+  description="Organize o delivery da sua farmácia: pedidos do WhatsApp e do balcão vão sozinhos para seus entregadores, com rota, prazo, forma de pagamento e troco registrados na entrega."
+  kicker="Para farmácias"
+  h1="Delivery de farmácia organizado, do WhatsApp à porta"
+  lede="O pedido chega pelo WhatsApp ou no balcão, você lança em segundos e ele vai sozinho para o entregador certo. Na entrega, forma de pagamento e troco ficam registrados."
+  problem={problem}
+  steps={steps}
+  list={list}
+  who={who}
+  faqs={faqs}
+  closing="Veja o Tregou com os pedidos da sua farmácia."
+  waText="Oi! Tenho uma farmácia e quero saber como o Tregou organiza as entregas."
+>
+  <ProofSheet slot="visual" />
+</SolutionLayout>

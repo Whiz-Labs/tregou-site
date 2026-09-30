@@ -1,0 +1,36 @@
+---
+// The courier app's "Confirmar entrega" sheet, with the labels the app uses
+// (apps/mobile DeliveryProofSheet): payment method, change, photo, note.
+const methods = ['Dinheiro', 'PIX', 'Crédito', 'Débito'];
+---
+
+<div class="phone">
+  <div class="screen">
+    <span class="title">Confirmar entrega</span>
+    <span class="label">Forma de pagamento</span>
+    <div class="methods">
+      {methods.map((m, i) => <span class={i === 0 ? 'on' : ''}>{m}</span>)}
+    </div>
+    <div class="troco"><span>Troco para</span><b>R$ 50,00</b></div>
+    <span class="label">Foto (opcional)</span>
+    <div class="photo">Tirar foto</div>
+    <span class="label">Observação (opcional)</span>
+    <div class="note">Deixado com o porteiro</div>
+    <span class="confirm">Confirmar entrega</span>
+  </div>
+</div>
+
+<style>
+  .phone { width: 300px; max-width: 100%; align-self: center; border-radius: 34px; background: #0b1418; padding: 10px; box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4); }
+  .screen { border-radius: 26px; background: #fff; padding: 22px 18px; display: flex; flex-direction: column; gap: 14px; color: var(--ink); }
+  .title { font-family: var(--display); font-weight: 700; font-size: 19px; }
+  .label { font-size: 12px; font-weight: 700; color: var(--ink-faint); }
+  .methods { display: flex; gap: 6px; }
+  .methods span { flex-grow: 1; padding: 9px 0; text-align: center; border-radius: 10px; font-size: 12px; font-weight: 700; border: 1px solid #e0dfda; color: var(--ink-muted); }
+  .methods span.on { background: var(--emerald-700); border-color: var(--emerald-700); color: #fff; }
+  .troco { display: flex; justify-content: space-between; align-items: center; padding: 11px 12px; border-radius: 10px; background: #f3f2ee; font-size: 13px; font-weight: 600; }
+  .troco b { font-size: 14px; }
+  .photo { height: 64px; border-radius: 10px; border: 1px dashed #c9c8c2; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--ink-muted); }
+  .note { padding: 11px 12px; border-radius: 10px; border: 1px solid #e0dfda; font-size: 13px; color: var(--ink-muted); }
+  .confirm { padding: 14px 0; border-radius: 12px; background: var(--emerald-700); color: #fff; text-align: center; font-size: 14px; font-weight: 700; }
+</style>

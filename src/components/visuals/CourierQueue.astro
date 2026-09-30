@@ -1,0 +1,51 @@
+---
+// The courier queue as the panel shows it: whoever has been free the longest
+// is "Próximo", the next one "2º", the rest out on a delivery or riding back.
+const couriers = [
+  { name: 'Carlos', sub: 'No restaurante', chip: 'Próximo', tone: 'next' },
+  { name: 'Marcos', sub: 'No restaurante', chip: '2º', tone: 'green' },
+  { name: 'Ana', sub: 'Em entrega · 2 pedidos', chip: '12 min', tone: 'amber' },
+  { name: 'João', sub: 'Voltando', chip: '3 km', tone: 'gray' },
+];
+---
+
+<div class="queue">
+  <div class="head">
+    <span class="title">Entregadores</span>
+    <span class="count">4 online</span>
+  </div>
+  {couriers.map((c) => (
+    <div class="row">
+      <span class="avatar">{c.name[0]}</span>
+      <span class="who"><b>{c.name}</b><span>{c.sub}</span></span>
+      <em class={`chip ${c.tone}`}>{c.chip}</em>
+    </div>
+  ))}
+  <p class="note">Quem está livre há mais tempo recebe a próxima entrega.</p>
+</div>
+
+<style>
+  .queue {
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.35);
+    padding: 20px 22px 12px;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+  }
+  .head { display: flex; align-items: center; justify-content: space-between; padding-bottom: 6px; }
+  .title { font-family: var(--display); font-weight: 700; font-size: 17px; }
+  .count { font-size: 12px; font-weight: 600; color: var(--ink-faint); }
+  .row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #edece6; }
+  .avatar { width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%; background: #edece6; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--ink-muted); }
+  .who { flex-grow: 1; display: flex; flex-direction: column; gap: 2px; }
+  .who b { font-size: 14px; }
+  .who span { font-size: 12px; color: var(--ink-faint); }
+  .chip { font-style: normal; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+  .chip.next { color: var(--ink-on-neon); background: var(--neon); }
+  .chip.green { color: #07734f; background: #ddefe6; }
+  .chip.amber { color: #92400e; background: #fdf1d6; }
+  .chip.gray { color: var(--ink-muted); background: #edece6; }
+  .note { padding: 12px 0 4px; font-size: 12px; color: var(--ink-faint); }
+</style>

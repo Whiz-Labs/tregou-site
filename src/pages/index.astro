@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { config } from '../config';
+import '../styles/brand.css';
+import { solutionPages } from '../solutions';
 
 // The title carries the words people search for ("entregas", "entregadores");
 // the hero keeps the short brand line.
@@ -328,6 +330,7 @@ const fonts =
     <div class="wrap footer-row">
       <img src="/brand/tregou-wordmark-light.svg" alt="Tregou" class="footer-logo" width="86" height="22" />
       <div class="footer-links">
+        {solutionPages.map((p) => <a href={p.href}>{p.label}</a>)}
         <a href="/entregador?src=footer" data-ev="footer_courier">Sou entregador</a>
         <a href={privacyLink} target="_blank" rel="noopener">Privacidade</a>
         <a href="https://instagram.com/tregou.app" target="_blank" rel="noopener">Instagram</a>
@@ -341,27 +344,6 @@ const fonts =
   /* Two layers (brand rule): the hero is the energetic brand moment — slate
      ground, neon from the logo arrow; the rest is the calm work surface —
      warm neutral, emerald buttons. */
-  :global(:root) {
-    --slate: #1f2a30;
-    --slate-2: #26343b;
-    --slate-line: #3b4b52;
-    --on-slate: #f4f7f5;
-    --on-slate-muted: #b9c6c0;
-    --on-slate-faint: #8fa39a;
-    --neon: #1fc46e;
-    --ink-on-neon: #0b1a12;
-    --emerald-700: #07734f;
-    --emerald-600: #088a5f;
-    --ground: #f6f5f1;
-    --card: #ffffff;
-    --line: #e7e6e1;
-    --ink: #1f2a30;
-    --ink-muted: #4a5a54;
-    --ink-faint: #5b6b64;
-    --display: 'Bricolage Grotesque', 'Figtree', system-ui, sans-serif;
-    --body: 'Figtree', system-ui, -apple-system, sans-serif;
-  }
-
   :global(body) {
     font-family: var(--body);
     background: var(--ground);

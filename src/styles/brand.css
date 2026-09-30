@@ -1,0 +1,23 @@
+/* Two layers (brand rule): the dark top is the energetic brand moment —
+   slate ground, neon from the logo arrow; the rest is the calm work surface —
+   warm neutral, emerald buttons. Shared by the landing and the search pages. */
+:root {
+  --slate: #1f2a30;
+  --slate-2: #26343b;
+  --slate-line: #3b4b52;
+  --on-slate: #f4f7f5;
+  --on-slate-muted: #b9c6c0;
+  --on-slate-faint: #8fa39a;
+  --neon: #1fc46e;
+  --ink-on-neon: #0b1a12;
+  --emerald-700: #07734f;
+  --emerald-600: #088a5f;
+  --ground: #f6f5f1;
+  --card: #ffffff;
+  --line: #e7e6e1;
+  --ink: #1f2a30;
+  --ink-muted: #4a5a54;
+  --ink-faint: #5b6b64;
+  --display: 'Bricolage Grotesque', 'Figtree', system-ui, sans-serif;
+  --body: 'Figtree', system-ui, -apple-system, sans-serif;
+}
