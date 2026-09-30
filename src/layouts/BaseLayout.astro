@@ -5,6 +5,10 @@ interface Props {
   ogImage?: string;
   /** Google Fonts css2 URL; pages with their own type pass theirs. */
   fontsHref?: string;
+  /** Keeps the page out of search results and out of the sitemap. */
+  noindex?: boolean;
+  /** schema.org objects, rendered as one JSON-LD block each. */
+  jsonLd?: Record<string, unknown>[];
 }
 
 const {
@@ -12,6 +16,8 @@ const {
   description,
   ogImage = '/og-image.png',
   fontsHref = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
+  noindex = false,
+  jsonLd = [],
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -33,6 +39,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     <meta name="title" content={title} />
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
 
     <!-- Favicon -->
     <link rel="icon" href="/brand/tregou-icon-dark-neon.svg" type="image/svg+xml" />
@@ -65,6 +72,10 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     <!-- A <link>, not @import inside a style block: the browser finds it
          while parsing the head instead of after the CSS has loaded. -->
     <link rel="stylesheet" href={fontsHref} />
+
+    {jsonLd.map((data) => (
+      <script type="application/ld+json" set:html={JSON.stringify(data)} />
+    ))}
   </head>
   <body>
     <slot />

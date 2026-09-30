@@ -9,7 +9,10 @@ const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
 const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 ---
 
+<!-- A quiz step, not an answer to a search: kept out of the index so the
+     homepage is the one page that ranks for the business audience. -->
 <BaseLayout
+  noindex
   title="Começar com o Tregou"
   description="Responda 5 perguntas rápidas e veja como o Tregou funciona pro seu negócio — distribuição de entregas automática, no prazo e no seu controle."
 >

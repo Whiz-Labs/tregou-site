@@ -2,8 +2,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { config } from '../config';
 
-const pageTitle = 'Tregou — Suas entregas no automático';
-const pageDescription = 'Pedidos dos apps de delivery, do WhatsApp ou do balcão vão sozinhos pros seus entregadores, na melhor rota. Entregador? Entre na Rede Tregou.';
+// The title carries the words people search for ("entregas", "entregadores");
+// the hero keeps the short brand line.
+const pageTitle = 'Tregou — Gestão de entregas e entregadores no automático';
+const pageDescription = 'Sistema de entregas para restaurantes, farmácias e lojas: pedidos dos apps de delivery, do WhatsApp ou do balcão vão sozinhos pros seus entregadores, na melhor rota.';
 const { whatsappLink, whatsappNumber, signupLink, privacyLink, orderApps } = config;
 
 // "iFood" / "iFood e Anota AI" / "iFood, Anota AI e X"
@@ -57,6 +59,42 @@ const faqs = [
   },
 ];
 
+// Structured data. The FAQ schema is built from the same list the page
+// renders, so the answers Google shows can never drift from the page.
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Tregou',
+    url: 'https://tregou.app',
+    logo: 'https://tregou.app/tregou-logo.png',
+    sameAs: ['https://instagram.com/tregou.app'],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'Tregou',
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Web, Android',
+    description: pageDescription,
+    url: 'https://tregou.app',
+    inLanguage: 'pt-BR',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'BRL', description: 'Teste grátis, sem cartão' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: [f.lead, f.points ? `Com o Tregou: ${f.points.join(' ')}` : '', f.tail ?? ''].filter(Boolean).join(' '),
+      },
+    })),
+  },
+];
+
 // A business that isn't ready to sign up gets a conversation, not a form:
 // the message is typed for them, they only press send.
 const waBusiness = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
@@ -75,7 +113,7 @@ const fonts =
   'https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap';
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} fontsHref={fonts}>
+<BaseLayout title={pageTitle} description={pageDescription} fontsHref={fonts} jsonLd={jsonLd}>
   <section class="hero">
     <div class="wrap">
       <nav class="nav">
