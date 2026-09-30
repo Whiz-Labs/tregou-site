@@ -23,6 +23,8 @@ const blog = defineCollection({
     coverCreditUrl: z.string().url().optional(),
     /** 1200×630 share image with the title; falls back to the site's. */
     ogImage: z.string().optional(),
+    /** The big card at the top of the blog list; the newest featured post wins. */
+    featured: z.boolean().default(false),
     /** Unpublished posts build locally but never ship. */
     draft: z.boolean().default(false),
   }),

@@ -5,7 +5,8 @@ import { config } from '../../config';
 import { getPosts } from '../../blog';
 
 const posts = await getPosts();
-const [featured, ...rest] = posts;
+const featured = posts.find((p) => p.data.featured) ?? posts[0];
+const rest = posts.filter((p) => p !== featured);
 // Category chips only earn their place once there is something to filter.
 const categories = [...new Set(posts.map((p) => p.data.category))];
 
@@ -33,14 +34,15 @@ const jsonLd = [
 
   <section class="list">
     {categories.length > 1 && (
-      <div class="cats" aria-label="Categorias">
-        {categories.map((c) => <span class="cat-chip">{c}</span>)}
+      <div class="cats" role="group" aria-label="Filtrar por categoria" hidden data-cats>
+        <button type="button" class="cat-chip" aria-pressed="true" data-cat="">Todos</button>
+        {categories.map((c) => <button type="button" class="cat-chip" aria-pressed="false" data-cat={c}>{c}</button>)}
       </div>
     )}
 
     {featured && (
       <div class="featured">
-        <PostCard post={featured} big />
+        <div data-post-cat={featured.data.category}><PostCard post={featured} big /></div>
         <div class="promo">
           <span class="promo-kicker">Tregou</span>
           <span class="promo-title">Suas entregas no automático.</span>
@@ -52,11 +54,30 @@ const jsonLd = [
 
     {rest.length > 0 && (
       <div class="grid">
-        {rest.map((p) => <PostCard post={p} />)}
+        {rest.map((p) => <div data-post-cat={p.data.category}><PostCard post={p} /></div>)}
       </div>
     )}
   </section>
 </BlogLayout>
+
+<script>
+  // Category filter. Without script the chips stay hidden and every post shows.
+  const bar = document.querySelector<HTMLElement>('[data-cats]');
+  if (bar) {
+    bar.hidden = false;
+    const chips = [...bar.querySelectorAll<HTMLButtonElement>('button[data-cat]')];
+    const items = [...document.querySelectorAll<HTMLElement>('[data-post-cat]')];
+    const promo = document.querySelector<HTMLElement>('.promo');
+    bar.addEventListener('click', (e) => {
+      const chip = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-cat]');
+      if (!chip) return;
+      const cat = chip.dataset.cat ?? '';
+      chips.forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+      items.forEach((it) => (it.hidden = !!cat && it.dataset.postCat !== cat));
+      if (promo) promo.hidden = !!cat;
+    });
+  }
+</script>
 
 <style>
   .intro { padding: 20px 0 44px; display: flex; flex-direction: column; gap: 14px; max-width: 760px; }
@@ -75,7 +96,15 @@ const jsonLd = [
   @media (min-width: 768px) { .list { padding: 56px 0 88px; gap: 32px; } }
 
   .cats { display: flex; flex-wrap: wrap; gap: 10px; }
-  .cat-chip { padding: 9px 16px; border-radius: 999px; font-size: 14px; font-weight: 600; border: 1px solid #d5d4ce; color: var(--ink-muted); }
+  .cats[hidden] { display: none; }
+  .cat-chip { padding: 9px 16px; border-radius: 999px; font: inherit; font-size: 14px; font-weight: 600; border: 1px solid #d5d4ce; background: transparent; color: var(--ink-muted); cursor: pointer; min-height: 40px; }
+  .cat-chip:hover { border-color: var(--ink-faint); }
+  .cat-chip[aria-pressed='true'] { background: var(--slate); border-color: var(--slate); color: #fff; }
+  .cat-chip:focus-visible { outline: 3px solid var(--emerald-600); outline-offset: 2px; }
+  [data-post-cat] { display: flex; flex-direction: column; }
+  [data-post-cat] > :global(.card) { flex-grow: 1; }
+  [data-post-cat][hidden], .promo[hidden] { display: none; }
+  @media (min-width: 900px) { .featured:has(.promo[hidden]) { grid-template-columns: minmax(0, 720px); } }
 
   .featured { display: grid; gap: 16px; }
   @media (min-width: 900px) { .featured { grid-template-columns: minmax(0, 1fr) 420px; gap: 24px; } }
