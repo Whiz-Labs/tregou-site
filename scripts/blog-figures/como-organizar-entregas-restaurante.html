@@ -1,0 +1,149 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#fff;font-family:Figtree,sans-serif;color:#1F2A30}
+.fig{box-sizing:border-box;overflow:hidden}
+.d{font-family:'Bricolage Grotesque',sans-serif}
+</style></head><body>
+
+<!-- COVER 1440x720: map with a restaurant and three routes, no text -->
+<div id="capa" class="fig" style="width:1440px;height:720px;background:#1F2A30;position:relative">
+<svg width="1440" height="720" viewBox="0 0 1440 720">
+ <circle cx="1180" cy="-40" r="420" fill="#243A33" opacity=".55"/>
+ <g stroke="#2A3A41" stroke-width="22" fill="none" stroke-linecap="round">
+  <path d="M0 150 H1440 M0 360 H1440 M0 590 H1440 M180 0 V720 M470 0 V720 M760 0 V720 M1060 0 V720 M1300 0 V720"/>
+  <path d="M470 360 L760 150 M760 590 L1060 360"/>
+ </g>
+ <g fill="none" stroke-linecap="round" stroke-width="7">
+  <path d="M470 360 H760 V150 H1060" stroke="#1FC46E"/>
+  <path d="M470 360 V590 H180" stroke="#1FC46E" stroke-dasharray="3 16"/>
+  <path d="M470 360 H760 V590 H1060 V360 H1300" stroke="#C6F000" opacity=".9"/>
+ </g>
+ <g>
+  <circle cx="470" cy="360" r="34" fill="#F4F7F5"/><circle cx="470" cy="360" r="22" fill="#1F2A30"/>
+  
+ </g>
+ <g fill="#1F2A30" stroke-width="7">
+  <circle cx="1060" cy="150" r="20" stroke="#1FC46E"/><circle cx="180" cy="590" r="20" stroke="#1FC46E"/><circle cx="1300" cy="360" r="20" stroke="#C6F000"/>
+ </g>
+ <g><circle cx="760" cy="250" r="18" fill="#2F6FEB" stroke="#F4F7F5" stroke-width="6"/><circle cx="880" cy="590" r="18" fill="#2F6FEB" stroke="#F4F7F5" stroke-width="6"/></g>
+</svg>
+</div>
+
+<!-- OG 1200x630 with title -->
+<div id="og" class="fig" style="width:1200px;height:630px;background:#1F2A30;position:relative;display:flex">
+<svg width="1200" height="630" viewBox="0 0 1200 630" style="position:absolute;inset:0">
+ <circle cx="1080" cy="-60" r="380" fill="#243A33" opacity=".55"/>
+ <g stroke="#2A3A41" stroke-width="18" fill="none"><path d="M760 130 H1200 M760 330 H1200 M760 520 H1200 M840 0 V630 M1010 0 V630 M1150 0 V630"/></g>
+ <path d="M840 330 H1010 V130 H1150" stroke="#1FC46E" stroke-width="6" fill="none" stroke-linecap="round"/>
+ <path d="M840 330 V520 H1150" stroke="#C6F000" stroke-width="6" fill="none" stroke-linecap="round" stroke-dasharray="3 14"/>
+ <circle cx="840" cy="330" r="26" fill="#F4F7F5"/><circle cx="840" cy="330" r="15" fill="#1F2A30"/>
+ <circle cx="1150" cy="130" r="16" fill="#1F2A30" stroke="#1FC46E" stroke-width="6"/><circle cx="1150" cy="520" r="16" fill="#1F2A30" stroke="#C6F000" stroke-width="6"/>
+ <circle cx="1010" cy="220" r="14" fill="#2F6FEB" stroke="#F4F7F5" stroke-width="5"/>
+</svg>
+<div style="position:relative;padding:64px 72px;width:720px;display:flex;flex-direction:column;gap:22px">
+ <div style="display:flex;align-items:center;gap:14px"><img src="../../public/brand/tregou-wordmark.svg" style="height:38px"><span style="font-size:20px;font-weight:600;color:#8FA39A;border-left:2px solid #3B4B52;padding-left:14px">Blog</span></div>
+ <span style="font-size:18px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#1FC46E;margin-top:40px">Operação</span>
+ <span class="d" style="font-weight:800;font-size:58px;line-height:1.02;letter-spacing:-1.8px;color:#fff">Como organizar as entregas do seu restaurante com entregadores próprios</span>
+</div>
+</div>
+
+<!-- FIG fila 1440x760 -->
+<div id="fila" class="fig" style="width:1440px;height:620px;background:#F3F2EE;padding:50px 90px;display:flex;gap:70px;align-items:center">
+ <div style="width:620px;background:#fff;border-radius:34px;padding:40px 44px;box-shadow:0 20px 50px rgba(31,42,48,.10);display:flex;flex-direction:column">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:14px"><span class="d" style="font-weight:700;font-size:34px">Fila de hoje</span><span style="font-size:22px;font-weight:600;color:#5B6B64">livre desde</span></div>
+  <div style="display:flex;align-items:center;gap:22px;padding:22px 0;border-bottom:2px solid #EDECE6"><span style="width:62px;height:62px;border-radius:50%;background:#1FC46E;color:#0B1A12;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:26px">1</span><span style="flex-grow:1;font-size:32px;font-weight:700">Carlos</span><span style="font-size:28px;font-weight:600;color:#4A5A54">19:02</span></div>
+  <div style="display:flex;align-items:center;gap:22px;padding:22px 0;border-bottom:2px solid #EDECE6"><span style="width:62px;height:62px;border-radius:50%;background:#EDECE6;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:26px;color:#4A5A54">2</span><span style="flex-grow:1;font-size:32px;font-weight:700">Marcos</span><span style="font-size:28px;font-weight:600;color:#4A5A54">19:10</span></div>
+  <div style="display:flex;align-items:center;gap:22px;padding:22px 0"><span style="width:62px;height:62px;border-radius:50%;background:#EDECE6;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:26px;color:#4A5A54">3</span><span style="flex-grow:1;font-size:32px;font-weight:700">Ana</span><span style="font-size:28px;font-weight:600;color:#4A5A54">19:18</span></div>
+ </div>
+ <div style="flex-grow:1;display:flex;flex-direction:column;gap:34px">
+  <div style="display:flex;gap:22px;align-items:flex-start"><span style="flex-shrink:0;width:64px;height:64px;border-radius:50%;background:#1F2A30;color:#1FC46E;display:flex;align-items:center;justify-content:center"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><span style="font-size:32px;line-height:1.35;color:#1F2A30"><b>Chegou pedido:</b> vai para o primeiro da fila.</span></div>
+  <div style="display:flex;gap:22px;align-items:flex-start"><span style="flex-shrink:0;width:64px;height:64px;border-radius:50%;background:#1F2A30;color:#1FC46E;display:flex;align-items:center;justify-content:center"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 3-6.2M4 4v5h5"/></svg></span><span style="font-size:32px;line-height:1.35;color:#1F2A30"><b>Voltou da entrega:</b> entra no fim da fila.</span></div>
+ </div>
+</div>
+
+<!-- FIG juntar 1440x820 -->
+<div id="juntar" class="fig" style="width:1440px;height:820px;background:#F3F2EE;padding:60px 70px;display:flex;gap:44px">
+ <div style="flex:1;background:#fff;border-radius:34px;padding:40px;display:flex;flex-direction:column;gap:22px;box-shadow:0 20px 50px rgba(31,42,48,.10)">
+  <div style="display:flex;align-items:center;gap:16px"><span style="width:48px;height:48px;border-radius:50%;background:#DDEFE6;color:#07734F;display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span><span class="d" style="font-weight:700;font-size:36px">Mesmo caminho</span></div>
+  <svg viewBox="0 0 560 420" width="100%" style="border-radius:22px;background:#EAF0EC">
+   <g stroke="#fff" stroke-width="18"><path d="M0 110 H560 M0 300 H560 M110 0 V420 M300 0 V420 M470 0 V420"/></g>
+   <path d="M110 300 H300 V110 H470" stroke="#088A5F" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+   <circle cx="110" cy="300" r="24" fill="#1F2A30"/>
+   <circle cx="300" cy="110" r="18" fill="#fff" stroke="#088A5F" stroke-width="7"/><text x="300" y="72" text-anchor="middle" font-family="Figtree" font-weight="700" font-size="28" fill="#1F2A30">A</text>
+   <circle cx="470" cy="110" r="18" fill="#fff" stroke="#088A5F" stroke-width="7"/><text x="470" y="72" text-anchor="middle" font-family="Figtree" font-weight="700" font-size="28" fill="#1F2A30">B</text>
+  </svg>
+  <span style="font-size:28px;line-height:1.4;color:#4A5A54">B fica depois de A. Uma saída, dois clientes no prazo.</span>
+ </div>
+ <div style="flex:1;background:#fff;border-radius:34px;padding:40px;display:flex;flex-direction:column;gap:22px;box-shadow:0 20px 50px rgba(31,42,48,.10)">
+  <div style="display:flex;align-items:center;gap:16px"><span style="width:48px;height:48px;border-radius:50%;background:#FDE8E4;color:#B42318;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span><span class="d" style="font-weight:700;font-size:36px">Lados opostos</span></div>
+  <svg viewBox="0 0 560 420" width="100%" style="border-radius:22px;background:#EAF0EC">
+   <g stroke="#fff" stroke-width="18"><path d="M0 110 H560 M0 300 H560 M110 0 V420 M280 0 V420 M470 0 V420"/></g>
+   <path d="M280 300 H110 V110" stroke="#088A5F" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+   <path d="M280 300 H470 V110" stroke="#B45309" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 18"/>
+   <circle cx="280" cy="300" r="24" fill="#1F2A30"/>
+   <circle cx="110" cy="110" r="18" fill="#fff" stroke="#088A5F" stroke-width="7"/><text x="110" y="72" text-anchor="middle" font-family="Figtree" font-weight="700" font-size="28" fill="#1F2A30">A</text>
+   <circle cx="470" cy="110" r="18" fill="#fff" stroke="#B45309" stroke-width="7"/><text x="470" y="72" text-anchor="middle" font-family="Figtree" font-weight="700" font-size="28" fill="#1F2A30">B</text>
+  </svg>
+  <span style="font-size:28px;line-height:1.4;color:#4A5A54">B espera a volta de A. Melhor mandar separado.</span>
+ </div>
+</div>
+
+<!-- FIG estados 1440x440 -->
+<div id="estados" class="fig" style="width:1440px;height:440px;background:#F3F2EE;padding:0 80px;display:flex;align-items:center;gap:26px">
+ <div style="flex:1;background:#fff;border-radius:30px;padding:36px;display:flex;flex-direction:column;gap:14px;box-shadow:0 20px 50px rgba(31,42,48,.10)"><span style="align-self:flex-start;font-size:26px;font-weight:700;color:#07734F;background:#DDEFE6;padding:8px 20px;border-radius:999px">Pronto</span><span style="font-size:28px;color:#4A5A54;line-height:1.35">Embalado no balcão, esperando o entregador.</span></div>
+ <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#8FA39A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+ <div style="flex:1;background:#fff;border-radius:30px;padding:36px;display:flex;flex-direction:column;gap:14px;box-shadow:0 20px 50px rgba(31,42,48,.10)"><span style="align-self:flex-start;font-size:26px;font-weight:700;color:#92400E;background:#FDF1D6;padding:8px 20px;border-radius:999px">Saiu</span><span style="font-size:28px;color:#4A5A54;line-height:1.35">Com o Carlos, a caminho do cliente.</span></div>
+ <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#8FA39A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+ <div style="flex:1;background:#fff;border-radius:30px;padding:36px;display:flex;flex-direction:column;gap:14px;box-shadow:0 20px 50px rgba(31,42,48,.10)"><span style="align-self:flex-start;font-size:26px;font-weight:700;color:#fff;background:#1F2A30;padding:8px 20px;border-radius:999px">Entregue</span><span style="font-size:28px;color:#4A5A54;line-height:1.35">Na mão do cliente, às 19:41.</span></div>
+</div>
+<!-- FIG fila 1440x760 -->
+<div id="fila-m" class="fig" style="width:720px;background:#F3F2EE;padding:40px;display:flex;flex-direction:column;gap:40px">
+ <div style="background:#fff;border-radius:34px;padding:40px 44px;box-shadow:0 20px 50px rgba(31,42,48,.10);display:flex;flex-direction:column">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:14px"><span class="d" style="font-weight:700;font-size:34px">Fila de hoje</span><span style="font-size:22px;font-weight:600;color:#5B6B64">livre desde</span></div>
+  <div style="display:flex;align-items:center;gap:22px;padding:22px 0;border-bottom:2px solid #EDECE6"><span style="width:62px;height:62px;border-radius:50%;background:#1FC46E;color:#0B1A12;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:26px">1</span><span style="flex-grow:1;font-size:32px;font-weight:700">Carlos</span><span style="font-size:28px;font-weight:600;color:#4A5A54">19:02</span></div>
+  <div style="display:flex;align-items:center;gap:22px;padding:22px 0;border-bottom:2px solid #EDECE6"><span style="width:62px;height:62px;border-radius:50%;background:#EDECE6;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:26px;color:#4A5A54">2</span><span style="flex-grow:1;font-size:32px;font-weight:700">Marcos</span><span style="font-size:28px;font-weight:600;color:#4A5A54">19:10</span></div>
+  <div style="display:flex;align-items:center;gap:22px;padding:22px 0"><span style="width:62px;height:62px;border-radius:50%;background:#EDECE6;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:26px;color:#4A5A54">3</span><span style="flex-grow:1;font-size:32px;font-weight:700">Ana</span><span style="font-size:28px;font-weight:600;color:#4A5A54">19:18</span></div>
+ </div>
+ <div style="flex-grow:1;display:flex;flex-direction:column;gap:34px">
+  <div style="display:flex;gap:22px;align-items:flex-start"><span style="flex-shrink:0;width:64px;height:64px;border-radius:50%;background:#1F2A30;color:#1FC46E;display:flex;align-items:center;justify-content:center"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><span style="font-size:32px;line-height:1.35;color:#1F2A30"><b>Chegou pedido:</b> vai para o primeiro da fila.</span></div>
+  <div style="display:flex;gap:22px;align-items:flex-start"><span style="flex-shrink:0;width:64px;height:64px;border-radius:50%;background:#1F2A30;color:#1FC46E;display:flex;align-items:center;justify-content:center"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 3-6.2M4 4v5h5"/></svg></span><span style="font-size:32px;line-height:1.35;color:#1F2A30"><b>Voltou da entrega:</b> entra no fim da fila.</span></div>
+ </div>
+</div>
+
+<!-- FIG juntar 1440x820 -->
+<div id="juntar-m" class="fig" style="width:720px;background:#F3F2EE;padding:40px;display:flex;flex-direction:column;gap:32px">
+ <div style="flex:1;background:#fff;border-radius:34px;padding:40px;display:flex;flex-direction:column;gap:22px;box-shadow:0 20px 50px rgba(31,42,48,.10)">
+  <div style="display:flex;align-items:center;gap:16px"><span style="width:48px;height:48px;border-radius:50%;background:#DDEFE6;color:#07734F;display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span><span class="d" style="font-weight:700;font-size:36px">Mesmo caminho</span></div>
+  <svg viewBox="0 0 560 420" width="100%" style="border-radius:22px;background:#EAF0EC">
+   <g stroke="#fff" stroke-width="18"><path d="M0 110 H560 M0 300 H560 M110 0 V420 M300 0 V420 M470 0 V420"/></g>
+   <path d="M110 300 H300 V110 H470" stroke="#088A5F" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+   <circle cx="110" cy="300" r="24" fill="#1F2A30"/>
+   <circle cx="300" cy="110" r="18" fill="#fff" stroke="#088A5F" stroke-width="7"/><text x="300" y="72" text-anchor="middle" font-family="Figtree" font-weight="700" font-size="28" fill="#1F2A30">A</text>
+   <circle cx="470" cy="110" r="18" fill="#fff" stroke="#088A5F" stroke-width="7"/><text x="470" y="72" text-anchor="middle" font-family="Figtree" font-weight="700" font-size="28" fill="#1F2A30">B</text>
+  </svg>
+  <span style="font-size:28px;line-height:1.4;color:#4A5A54">B fica depois de A. Uma saída, dois clientes no prazo.</span>
+ </div>
+ <div style="flex:1;background:#fff;border-radius:34px;padding:40px;display:flex;flex-direction:column;gap:22px;box-shadow:0 20px 50px rgba(31,42,48,.10)">
+  <div style="display:flex;align-items:center;gap:16px"><span style="width:48px;height:48px;border-radius:50%;background:#FDE8E4;color:#B42318;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span><span class="d" style="font-weight:700;font-size:36px">Lados opostos</span></div>
+  <svg viewBox="0 0 560 420" width="100%" style="border-radius:22px;background:#EAF0EC">
+   <g stroke="#fff" stroke-width="18"><path d="M0 110 H560 M0 300 H560 M110 0 V420 M280 0 V420 M470 0 V420"/></g>
+   <path d="M280 300 H110 V110" stroke="#088A5F" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+   <path d="M280 300 H470 V110" stroke="#B45309" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 18"/>
+   <circle cx="280" cy="300" r="24" fill="#1F2A30"/>
+   <circle cx="110" cy="110" r="18" fill="#fff" stroke="#088A5F" stroke-width="7"/><text x="110" y="72" text-anchor="middle" font-family="Figtree" font-weight="700" font-size="28" fill="#1F2A30">A</text>
+   <circle cx="470" cy="110" r="18" fill="#fff" stroke="#B45309" stroke-width="7"/><text x="470" y="72" text-anchor="middle" font-family="Figtree" font-weight="700" font-size="28" fill="#1F2A30">B</text>
+  </svg>
+  <span style="font-size:28px;line-height:1.4;color:#4A5A54">B espera a volta de A. Melhor mandar separado.</span>
+ </div>
+</div>
+
+<!-- FIG estados 1440x440 -->
+<div id="estados-m" class="fig" style="width:720px;background:#F3F2EE;padding:40px;display:flex;flex-direction:column;align-items:stretch;gap:18px">
+ <div style="flex:1;background:#fff;border-radius:30px;padding:36px;display:flex;flex-direction:column;gap:14px;box-shadow:0 20px 50px rgba(31,42,48,.10)"><span style="align-self:flex-start;font-size:26px;font-weight:700;color:#07734F;background:#DDEFE6;padding:8px 20px;border-radius:999px">Pronto</span><span style="font-size:28px;color:#4A5A54;line-height:1.35">Embalado no balcão, esperando o entregador.</span></div>
+ <svg width="44" height="44" viewBox="0 0 24 24" style="align-self:center;transform:rotate(90deg)" fill="none" stroke="#8FA39A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+ <div style="flex:1;background:#fff;border-radius:30px;padding:36px;display:flex;flex-direction:column;gap:14px;box-shadow:0 20px 50px rgba(31,42,48,.10)"><span style="align-self:flex-start;font-size:26px;font-weight:700;color:#92400E;background:#FDF1D6;padding:8px 20px;border-radius:999px">Saiu</span><span style="font-size:28px;color:#4A5A54;line-height:1.35">Com o Carlos, a caminho do cliente.</span></div>
+ <svg width="44" height="44" viewBox="0 0 24 24" style="align-self:center;transform:rotate(90deg)" fill="none" stroke="#8FA39A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+ <div style="flex:1;background:#fff;border-radius:30px;padding:36px;display:flex;flex-direction:column;gap:14px;box-shadow:0 20px 50px rgba(31,42,48,.10)"><span style="align-self:flex-start;font-size:26px;font-weight:700;color:#fff;background:#1F2A30;padding:8px 20px;border-radius:999px">Entregue</span><span style="font-size:28px;color:#4A5A54;line-height:1.35">Na mão do cliente, às 19:41.</span></div>
+</div>
+</body></html>
