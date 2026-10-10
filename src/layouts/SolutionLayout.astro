@@ -33,12 +33,15 @@ interface Props {
   closing: string;
   /** WhatsApp message typed for the visitor. */
   waText: string;
+  /** The business type the page is for; the sign-up form opens with it
+   *  ticked (panel ?segment=, flow 2.1-01). None on mixed pages. */
+  segment?: 'restaurante' | 'farmacia';
 }
 
-const { slug, title, description, kicker, h1, lede, problem, steps, list, who, faqs, closing, waText } = Astro.props;
+const { slug, title, description, kicker, h1, lede, problem, steps, list, who, faqs, closing, waText, segment } = Astro.props;
 const { signupLink, whatsappNumber, privacyLink } = config;
 
-const signup = `${signupLink}?src=${slug}`;
+const signup = `${signupLink}?src=${slug}${segment ? `&segment=${segment}` : ''}`;
 const wa = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(waText)}`;
 const here = new URL(Astro.url.pathname, Astro.site).toString();
 const others = solutionPages.filter((p) => !Astro.url.pathname.startsWith(p.href));
