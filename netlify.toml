@@ -9,6 +9,14 @@
   status = 301
   force = true
 
+# Kurye kapısı: "Sou entregador" doğrudan uygulama sayfasına (Tregou flow 1, app-install.from-site).
+# Eski ön kayıt anketi yerine; ?ref= (davet) ve ?src= sorgusu olduğu gibi taşınır.
+[[redirects]]
+  from = "/entregador"
+  to = "https://panel.tregou.app/app"
+  status = 302
+  force = true
+
 # SPA gibi davranması gerekirse (opsiyonel, Astro için genelde gerekmez)
 # [[redirects]]
 #   from = "/*"
